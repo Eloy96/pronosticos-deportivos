@@ -74,12 +74,6 @@
             color: var(--bg-dark);
         }
 
-        .auth-toggle.is-vip {
-            background: var(--primary);
-            color: var(--bg-dark);
-            border-color: var(--primary);
-        }
-
         /* Hero Section */
         .hero {
             text-align: center;
@@ -105,7 +99,7 @@
             margin-bottom: 2.5rem;
         }
 
-        /* Pricing Section (Omitido parcial por brevedad en CSS, se mantiene igual) */
+        /* Pricing Section */
         .pricing-section {
             padding: 4rem 1rem;
             max-width: 1200px;
@@ -159,6 +153,7 @@
             transition: all 0.3s ease; text-transform: uppercase;
         }
         .cta-button:hover { background-color: var(--primary-hover); color: var(--bg-dark); }
+        .cta-button:disabled { opacity: 0.5; cursor: not-allowed; }
         .pricing-card.popular .cta-button { background-color: var(--primary); color: var(--bg-dark); }
 
         /* History Section & BLUR EFFECTS */
@@ -273,7 +268,7 @@
     <main>
         <section class="hero">
             <h1>Convierte tu Pasión en <span>Ganancias Reales</span></h1>
-            <p>Accede a pronósticos deportivos con +68% de acierto mensual. Alimentado en tiempo real por nuestros analistas.</p>
+            <p>Accede a pronósticos deportivos con +68% de acierto mensual. Alimentado en tiempo real por nuestros analistas directamente desde nuestra base de datos en vivo.</p>
         </section>
 
         <section id="historial" class="history-section">
@@ -294,7 +289,7 @@
                         </tr>
                     </thead>
                     <tbody id="picks-body">
-                        <tr><td colspan="6" style="text-align: center;">Cargando datos desde Google Sheets...</td></tr>
+                        <tr><td colspan="7" style="text-align: center; padding: 2rem;">Cargando datos del servidor real (Google Sheets)... ⏳</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -327,7 +322,7 @@
                     <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Desbloqueo total del Historial</li>
                     <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Guía de gestión de Bankroll</li>
                 </ul>
-                <button class="cta-button" onclick="simulateCheckout('Premium')">Suscribirse (1 Mes)</button>
+                <button id="btn-subscribe" class="cta-button" onclick="simulateCheckout('Premium')">Suscribirse (1 Mes)</button>
             </article>
         </section>
     </main>
@@ -342,9 +337,9 @@
             <form onsubmit="handleAuth(event)">
                 <input type="email" id="auth-email" placeholder="Tu correo electrónico" required>
                 <input type="password" id="auth-pass" placeholder="Tu contraseña" required>
-                <button type="submit" class="cta-button" style="background: var(--primary); color: var(--bg-dark);">Acceder / Registrarse</button>
+                <button type="submit" id="btn-auth" class="cta-button" style="background: var(--primary); color: var(--bg-dark);">Acceder / Registrarse</button>
             </form>
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 1rem;">Si no tienes cuenta, se creará automáticamente.</p>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 1rem;">Si no tienes cuenta, se creará automáticamente en Google Sheets.</p>
         </div>
     </div>
 
@@ -356,60 +351,114 @@
     </div>
 
     <script>
-        // --- SISTEMA DE USUARIOS Y SUSCRIPCIONES ---
+        // --- ESTADO GLOBAL ---
         let currentUser = null; 
+        let picksData = [];
 
-        // Funciones de UI para Autenticación
+        // --- CONEXIÓN CON GOOGLE APPS SCRIPT ---
+        // Aquí está tu URL Oficial. ¡Ya no usamos el simulador!
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyrowaQ5ioMtRyU1qM3pCzAsqa1HeY1YA2d0ZC2bwUcrk8SiyPRVV9eJf4B3wCOngX1/exec';
+
+        async function fetchAPI(params) {
+            try {
+                // Pasamos los parámetros por URL (Método GET seguro contra bloqueos CORS)
+                const url = new URL(SCRIPT_URL);
+                Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+                
+                const response = await fetch(url);
+                return await response.json();
+            } catch (error) {
+                console.error("Error Fetch API:", error);
+                return { success: false, message: "Error de conexión con Google Sheets." };
+            }
+        }
+
+        // --- FUNCIONES DE INTERACCIÓN Y UI ---
+
+        async function loadPicks() {
+            const response = await fetchAPI({ action: 'getPicks' });
+            
+            if (response.success && response.data) {
+                picksData = response.data;
+                renderTable();
+            } else {
+                document.getElementById('picks-body').innerHTML = `<tr><td colspan="7" style="color:#ff3b30; text-align:center;">Error cargando los pronósticos o no hay datos en la hoja "Picks". Llena algunas filas en tu Excel.</td></tr>`;
+            }
+        }
+
         function toggleAuthModal() {
             document.getElementById('auth-modal').classList.toggle('active');
         }
 
-        function handleAuth(event) {
+        async function handleAuth(event) {
             event.preventDefault();
             const email = document.getElementById('auth-email').value;
+            const pass = document.getElementById('auth-pass').value;
             
-            // Simulamos el inicio de sesión de un usuario
-            currentUser = {
-                email: email,
-                isVIP: false,
-                subStartDate: null,
-                subEndDate: null
-            };
-            
-            toggleAuthModal();
-            updateUserInterface();
-            renderTable();
-            
-            showSimulatedEmail(`¡Bienvenido a PickPro, ${email}! Has creado tu cuenta exitosamente. Para empezar a ganar, elige un plan de suscripción.`);
+            const btn = document.getElementById('btn-auth');
+            btn.textContent = "Procesando...";
+            btn.disabled = true;
+
+            // Llamada al backend (Esto ahora va a tu pestaña "Usuarios")
+            const response = await fetchAPI({ action: 'auth', email: email, password: pass });
+
+            btn.textContent = "Acceder / Registrarse";
+            btn.disabled = false;
+
+            if (response.success) {
+                currentUser = {
+                    email: response.email,
+                    isVIP: response.isVIP,
+                    subEndDate: response.subEndDate ? new Date(response.subEndDate) : null
+                };
+                
+                toggleAuthModal();
+                updateUserInterface();
+                renderTable();
+                
+                let msg = response.isNew ? `¡Bienvenido a PickPro, ${email}! Tu cuenta ha sido creada en la base de datos.` : `¡Hola de nuevo, ${email}!`;
+                showSimulatedEmail(msg);
+                checkSubscriptionStatus(); // Verifica si ya caducó
+            } else {
+                alert(response.message); // Muestra error (ej. Contraseña incorrecta)
+            }
         }
 
-        function simulateCheckout(plan) {
+        async function simulateCheckout(plan) {
             if (!currentUser) {
                 alert("Por favor, inicia sesión o regístrate primero para poder suscribirte.");
                 toggleAuthModal();
                 return;
             }
 
-            // LÓGICA DE FECHAS: Calcular 1 mes exacto desde hoy
-            const now = new Date();
-            const endDate = new Date();
-            endDate.setMonth(endDate.getMonth() + 1); // Suma 1 mes al día actual
+            const btn = document.getElementById('btn-subscribe');
+            const originalText = btn.textContent;
+            btn.textContent = "Procesando pago seguro...";
+            btn.disabled = true;
 
-            currentUser.isVIP = true;
-            currentUser.subStartDate = now;
-            currentUser.subEndDate = endDate;
+            // Al hacer click, esto buscará el usuario en tu Excel y le sumará un mes a su plan
+            const response = await fetchAPI({ action: 'subscribe', email: currentUser.email });
 
-            updateUserInterface();
-            renderTable();
-            
-            alert(`¡Pago exitoso! Tu suscripción está activa hasta el ${endDate.toLocaleDateString()}.`);
-            showSimulatedEmail(`✅ Recibo de pago: Suscripción ${plan} activada con éxito. Fecha de vencimiento: ${endDate.toLocaleDateString()}`);
+            btn.textContent = originalText;
+            btn.disabled = false;
+
+            if (response.success) {
+                currentUser.isVIP = true;
+                currentUser.subEndDate = new Date(response.subEndDate);
+
+                updateUserInterface();
+                renderTable();
+                
+                alert(`¡Pago exitoso! Tu suscripción está activa hasta el ${currentUser.subEndDate.toLocaleDateString()}. Revisa tu Google Sheets, los datos se han actualizado.`);
+                showSimulatedEmail(`✅ Recibo de pago: Suscripción ${plan} activada. Fecha de vencimiento: ${currentUser.subEndDate.toLocaleDateString()}`);
+            } else {
+                alert("Hubo un error al procesar la suscripción. Intenta de nuevo.");
+            }
         }
 
         function simulateExpiration() {
             if (!currentUser || !currentUser.isVIP) return;
-            
-            // Truco para demostración: Forzamos la fecha de expiración a "ayer"
+            // Forzamos la fecha a "ayer" para probar qué pasa en la interfaz
             currentUser.subEndDate = new Date(Date.now() - 86400000); 
             checkSubscriptionStatus();
         }
@@ -417,14 +466,12 @@
         function checkSubscriptionStatus() {
             if (currentUser && currentUser.isVIP) {
                 const now = new Date();
-                // Si la fecha actual es mayor a la fecha de término estipulada
                 if (now > currentUser.subEndDate) {
-                    currentUser.isVIP = false; // Revocar acceso automáticamente
+                    currentUser.isVIP = false; // Revocamos acceso
                     updateUserInterface();
                     renderTable();
                     
-                    // Enviar correo automático de renovación
-                    showSimulatedEmail(`⚠️ TU SUSCRIPCIÓN HA CADUCADO. Hola ${currentUser.email}, tu plan de 1 mes terminó el ${currentUser.subEndDate.toLocaleDateString()}. Renueva ahora para desbloquear los pronósticos de hoy.`);
+                    showSimulatedEmail(`⚠️ TU SUSCRIPCIÓN HA CADUCADO. Hola ${currentUser.email}, tu plan terminó el ${currentUser.subEndDate.toLocaleDateString()}. Renueva ahora para desbloquear los pronósticos de hoy.`);
                 }
             }
         }
@@ -443,7 +490,6 @@
                     ? `<span class="sub-status">👑 VIP - Vence: ${currentUser.subEndDate.toLocaleDateString()}</span>` 
                     : `<span class="sub-status expired">❌ Sin suscripción activa</span>`;
                 
-                // Botón exclusivo para que tú pruebes la caducidad
                 let expireBtn = currentUser.isVIP 
                     ? `<button onclick="simulateExpiration()" style="background: none; border: none; color: #ff3b30; font-size: 0.7rem; cursor: pointer; text-decoration: underline; margin-top: 5px;">[Simular 30 días después]</button>`
                     : '';
@@ -460,126 +506,63 @@
             }
         }
 
-        // --- SIMULACIÓN DE DATOS DE GOOGLE SHEETS ---
-        // En un entorno real, tu Google Sheet debe tener estas columnas exactamente:
-        // Fecha, Deporte, Evento, Pronostico, CasaDeApuesta, Cuota, Resultado
-        const googleSheetsCSVData = `Fecha,Deporte,Evento,Pronostico,CasaDeApuesta,Cuota,Resultado
-Hoy,Fútbol,Champions: Real Madrid vs City,Ambos Marcan (BTTS),Bet365,1.85,Pendiente
-Mañana,Baloncesto,NBA: Lakers vs Nuggets,Más de 215.5 puntos,Caliente,1.90,Pendiente
-19/Mar,Tenis,ATP Miami: Alcaraz vs Sinner,Sinner Gana 2-0,1xBet,1.75,Pendiente
-20/Mar,Fútbol,Liga MX: América vs Cruz Azul,América Gana (1X2),Betway,2.10,Pendiente
-21/Mar,Béisbol,MLB: Yankees vs Astros,Yankees ML,Codere,1.85,Pendiente
-22/Mar,Fórmula 1,GP de Australia,Verstappen Podio,Bet365,1.40,Pendiente
-23/Mar,eSports,LoL: T1 vs Gen.G,T1 Gana Mapa 1,1xBet,1.95,Pendiente
-24/Mar,Boxeo,Canelo vs Benavidez,Canelo por Decisión,Caliente,2.20,Pendiente
-25/Mar,Fútbol,Eliminatorias: México vs USA,Empate,Betway,3.10,Pendiente
-26/Mar,Baloncesto,Euroliga: Real Madrid vs Barça,Real Madrid Handicap -5.5,Codere,1.85,Pendiente`;
-
-        let picksData = [];
-
-        // Función para convertir texto CSV (de Google Sheets) a objetos de JavaScript
-        function parseCSV(csvText) {
-            const lines = csvText.trim().split('\n');
-            const headers = lines[0].split(',');
-            const data = [];
-            
-            for (let i = 1; i < lines.length; i++) {
-                const values = lines[i].split(',');
-                if (values.length === headers.length) {
-                    let obj = {};
-                    for (let j = 0; j < headers.length; j++) {
-                        obj[headers[j].trim()] = values[j].trim();
-                    }
-                    data.push(obj);
-                }
-            }
-            return data;
-        }
-
-        // --- CONEXIÓN REAL A GOOGLE SHEETS (Instrucciones abajo) ---
-        async function loadPicks() {
-            try {
-                /* // CUANDO TENGAS TU GOOGLE SHEET, USA ESTE CÓDIGO BORRANDO LOS COMENTARIOS:
-                const sheetURL = "AQUI_PONES_EL_LINK_CSV_DE_TU_GOOGLE_SHEETS";
-                const response = await fetch(sheetURL);
-                const csvData = await response.text();
-                picksData = parseCSV(csvData);
-                */
-
-                // Para esta demostración, usamos los datos simulados:
-                picksData = parseCSV(googleSheetsCSVData);
-                
-                // Mostrar los datos en la tabla
-                renderTable();
-
-            } catch (error) {
-                document.getElementById('picks-body').innerHTML = `<tr><td colspan="6" style="color:red; text-align:center;">Error cargando los pronósticos.</td></tr>`;
-            }
-        }
-
-        // Función para inyectar los datos en el HTML
+        // --- RENDERIZADO DE TABLA ---
         function renderTable() {
             const tbody = document.getElementById('picks-body');
             tbody.innerHTML = ''; 
             
-            // Mapeo automático de iconos para los deportes
+            // Si no hay datos, mostramos un mensaje
+            if (picksData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 2rem;">No hay picks disponibles por el momento.</td></tr>`;
+                return;
+            }
+
             const sportIcons = {
                 "Fútbol": "⚽", "Baloncesto": "🏀", "Tenis": "🎾", 
-                "Béisbol": "⚾", "Fórmula 1": "🏎️", "Boxeo": "🥊", 
-                "eSports": "🎮"
+                "Béisbol": "⚾", "Fórmula 1": "🏎️", "Boxeo": "🥊", "eSports": "🎮"
             };
 
             picksData.forEach(pick => {
-                // Determinar color del estado
+                // Como los datos vienen de Excel, hay que asegurar que usamos las llaves exactas del encabezado
                 let statusClass = pick.Resultado === 'Acertado' ? 'status-win' : 
                                   pick.Resultado === 'Fallado' ? 'status-lose' : 'status-pending';
                 
-                // VERIFICAR ACCESO: Debe estar logueado Y tener suscripción activa
                 let userHasAccess = currentUser !== null && currentUser.isVIP;
 
-                // Lógica de Ocultamiento (Blur) si NO tiene acceso
-                let pronosticoHTML = pick.Pronostico;
-                let casaHTML = pick.CasaDeApuesta;
-                let cuotaHTML = pick.Cuota;
+                let pronosticoHTML = pick.Pronostico || "---";
+                let casaHTML = pick.CasaDeApuesta || "---";
+                let cuotaHTML = pick.Cuota || "---";
 
                 if (!userHasAccess) {
                     pronosticoHTML = `
                         <div class="locked-cell">
-                            <span class="blurred-text">${pick.Pronostico.replace(/[a-zA-Z0-9]/g, '█')}</span>
+                            <span class="blurred-text">${(pick.Pronostico || "Secreto").replace(/[a-zA-Z0-9]/g, '█')}</span>
                             <div class="lock-icon" onclick="window.location.href='#planes'">🔒 Ver Pick</div>
                         </div>`;
-                    casaHTML = `
-                        <div class="locked-cell">
-                            <span class="blurred-text">██████</span>
-                        </div>`;
-                    cuotaHTML = `
-                        <div class="locked-cell">
-                            <span class="blurred-text">X.XX</span>
-                        </div>`;
+                    casaHTML = `<div class="locked-cell"><span class="blurred-text">██████</span></div>`;
+                    cuotaHTML = `<div class="locked-cell"><span class="blurred-text">X.XX</span></div>`;
                 }
 
-                // Obtener el icono del deporte
                 let icon = sportIcons[pick.Deporte] || "🎯";
 
                 tbody.innerHTML += `
                     <tr>
-                        <td style="white-space: nowrap;">${pick.Fecha}</td>
-                        <td style="font-weight: 500; color: #94a3b8; white-space: nowrap;">${icon} ${pick.Deporte}</td>
-                        <td>${pick.Evento}</td>
+                        <td style="white-space: nowrap;">${pick.Fecha || "-"}</td>
+                        <td style="font-weight: 500; color: #94a3b8; white-space: nowrap;">${icon} ${pick.Deporte || "General"}</td>
+                        <td>${pick.Evento || "-"}</td>
                         <td>${pronosticoHTML}</td>
                         <td style="font-weight: 600; color: #cbd5e1;">${casaHTML}</td>
                         <td>${cuotaHTML}</td>
                         <td class="${statusClass}">
-                            ${pick.Resultado}
+                            ${pick.Resultado || "Pendiente"}
                         </td>
                     </tr>
                 `;
             });
 
-            // Actualizar mensaje de advertencia bajo la tabla
             let msgElement = document.getElementById('vip-message');
             if (currentUser && currentUser.isVIP) {
-                msgElement.style.display = 'none'; // Ocultar alerta si ya pagó
+                msgElement.style.display = 'none';
             } else if (currentUser && !currentUser.isVIP) {
                 msgElement.innerHTML = `🔒 Hola ${currentUser.email}, tienes cuenta pero <strong>no tienes una suscripción activa</strong>. Elige un plan para ver la tabla.`;
                 msgElement.style.display = 'block';
@@ -589,11 +572,10 @@ Mañana,Baloncesto,NBA: Lakers vs Nuggets,Más de 215.5 puntos,Caliente,1.90,Pen
             }
         }
 
-        // Iniciar carga de datos al abrir la página
+        // Iniciar
         document.addEventListener('DOMContentLoaded', () => {
             loadPicks();
         });
-
     </script>
 </body>
 </html>
