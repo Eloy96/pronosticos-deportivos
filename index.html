@@ -236,6 +236,29 @@
             border: 1px solid var(--card-border); background: var(--bg-dark); color: white;
             font-family: inherit;
         }
+
+        /* Tabs para Login / Registro */
+        .auth-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+        }
+        .auth-tab {
+            flex: 1;
+            padding: 0.8rem;
+            background: transparent;
+            border: 1px solid var(--card-border);
+            color: var(--text-muted);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .auth-tab.active {
+            background: rgba(0, 230, 118, 0.1);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
         
         .user-profile {
             display: flex; flex-direction: column; align-items: flex-end;
@@ -243,6 +266,49 @@
         .user-email { font-weight: bold; font-size: 0.9rem; }
         .sub-status { font-size: 0.75rem; color: var(--primary); }
         .sub-status.expired { color: #ff3b30; }
+
+        /* Estilos para Checkboxes y Modales Legales */
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-top: 4px;
+            cursor: pointer;
+        }
+        .checkbox-group label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+        .checkbox-group a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .checkbox-group a:hover {
+            text-decoration: underline;
+        }
+        
+        .legal-modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 2.5rem;
+            width: 90%;
+            max-width: 800px;
+            max-height: 85vh;
+            overflow-y: auto;
+            text-align: left;
+            position: relative;
+        }
+        .legal-modal-content h2 { color: var(--primary); margin-bottom: 1rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; }
+        .legal-modal-content h3 { color: white; margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.1rem; }
+        .legal-modal-content p, .legal-modal-content li { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.8rem; line-height: 1.6; }
 
         @media (max-width: 768px) {
             .pricing-card.popular { transform: scale(1); }
@@ -310,7 +376,7 @@
                     <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>1 Pick gratuito a la semana</li>
                     <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Estadísticas básicas</li>
                 </ul>
-                <button class="cta-button" onclick="toggleAuthModal()">Crear Cuenta Gratis</button>
+                <button class="cta-button" onclick="toggleAuthModal(); switchTab('register')">Crear Cuenta Gratis</button>
             </article>
 
             <article class="pricing-card popular">
@@ -327,19 +393,55 @@
         </section>
     </main>
 
-    <!-- Modal de Autenticación -->
+    <!-- Modal de Autenticación Múltiple -->
     <div id="auth-modal" class="modal-overlay">
         <div class="auth-panel">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                <h2 style="margin: 0;">Ingreso de Clientes</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 id="auth-title" style="margin: 0;">Iniciar Sesión</h2>
                 <button onclick="toggleAuthModal()" style="background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">&times;</button>
             </div>
-            <form onsubmit="handleAuth(event)">
-                <input type="email" id="auth-email" placeholder="Tu correo electrónico" required>
-                <input type="password" id="auth-pass" placeholder="Tu contraseña" required>
-                <button type="submit" id="btn-auth" class="cta-button" style="background: var(--primary); color: var(--bg-dark);">Acceder / Registrarse</button>
+
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">Ingresar</button>
+                <button class="auth-tab" id="tab-register" onclick="switchTab('register')">Registrarse</button>
+            </div>
+
+            <!-- Formulario de Inicio de Sesión -->
+            <form id="form-login" onsubmit="handleLogin(event)">
+                <input type="email" id="login-email" placeholder="Tu correo electrónico" required>
+                <input type="password" id="login-pass" placeholder="Tu contraseña" required>
+                <button type="submit" id="btn-login" class="cta-button" style="background: var(--primary); color: var(--bg-dark);">Acceder</button>
             </form>
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 1rem;">Si no tienes cuenta, se creará automáticamente en Google Sheets.</p>
+
+            <!-- Formulario de Registro -->
+            <form id="form-register" onsubmit="handleRegister(event)" style="display: none;">
+                <input type="text" id="reg-name" placeholder="Nombre y Apellidos" required>
+                <input type="number" id="reg-age" placeholder="Edad" min="18" required title="Debes ser mayor de 18 años para apostar">
+                <input type="text" id="reg-username" placeholder="Nombre de usuario (Único)" required>
+                <input type="email" id="reg-email" placeholder="Correo electrónico (Único)" required>
+                <input type="password" id="reg-pass" placeholder="Crea una contraseña" required>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="reg-terms" required>
+                    <label for="reg-terms">He leído y acepto los <a href="#" onclick="openLegalModal('terms', event)">Términos y Condiciones</a>.</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="reg-privacy" required>
+                    <label for="reg-privacy">He leído y acepto el <a href="#" onclick="openLegalModal('privacy', event)">Aviso de Privacidad</a>.</label>
+                </div>
+
+                <button type="submit" id="btn-register" class="cta-button" style="background: var(--primary); color: var(--bg-dark);">Registrarse Ahora</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Legal (Términos y Privacidad) -->
+    <div id="legal-modal" class="modal-overlay" style="z-index: 2500;">
+        <div class="legal-modal-content">
+            <button onclick="closeLegalModal()" style="position: absolute; top: 1.5rem; right: 1.5rem; background: rgba(255,255,255,0.1); border: none; color: white; width: 30px; height: 30px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
+            <div id="legal-content-container">
+                <!-- El contenido se inyecta por JS -->
+            </div>
         </div>
     </div>
 
@@ -355,13 +457,64 @@
         let currentUser = null; 
         let picksData = [];
 
+        // --- TEXTOS LEGALES (BLINDAJE) ---
+        const legalTexts = {
+            terms: `
+                <h2>Términos y Condiciones de Uso</h2>
+                <p>Última actualización: Marzo 2026</p>
+                <h3>1. Naturaleza del Servicio</h3>
+                <p>PickPro es una plataforma dedicada exclusivamente a la provisión de información, análisis estadístico y pronósticos deportivos. <strong>PickPro NO es una casa de apuestas</strong>, no capta fondos para juegos de azar, ni administra el dinero de los usuarios. Todo el contenido es estrictamente informativo y de entretenimiento.</p>
+                
+                <h3>2. Exención de Responsabilidad</h3>
+                <p>Las apuestas deportivas conllevan un alto riesgo financiero. Los pronósticos compartidos en esta plataforma están basados en análisis probabilísticos y <strong>no garantizan ningún resultado económico ni ganancias financieras</strong>. El usuario es 100% responsable de las decisiones que tome con su capital. PickPro y sus analistas no se hacen responsables por pérdidas monetarias directas o indirectas derivadas del uso de nuestra información.</p>
+
+                <h3>3. Requisito de Edad (+18)</h3>
+                <p>El acceso y registro en esta plataforma está estrictamente prohibido para menores de 18 años. Al aceptar estos términos, el usuario declara bajo protesta de decir verdad que es mayor de edad en su jurisdicción. Nos reservamos el derecho de cancelar cuentas que infrinjan esta norma sin previo aviso.</p>
+
+                <h3>4. Suscripciones y Política de No Reembolsos</h3>
+                <p>Al adquirir una suscripción VIP, el usuario obtiene acceso a contenido digital exclusivo e inmediato. Por la naturaleza digital del servicio (información consumible), <strong>no existen devoluciones ni reembolsos</strong> una vez procesado el pago. El usuario puede cancelar la renovación automática de su suscripción en cualquier momento.</p>
+
+                <h3>5. Propiedad Intelectual y Prohibición de Reventa</h3>
+                <p>Los pronósticos, cuotas y análisis proporcionados son propiedad intelectual de PickPro. Está estrictamente prohibida la reventa, redistribución, publicación en redes sociales o grupos de terceros (ej. Telegram, WhatsApp) del contenido exclusivo. La detección de estas prácticas resultará en el baneo permanente de la cuenta y posibles acciones legales.</p>
+            `,
+            privacy: `
+                <h2>Aviso de Privacidad</h2>
+                <p>Última actualización: Marzo 2026</p>
+                <p>En cumplimiento con la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP), PickPro le informa sobre el tratamiento de sus datos.</p>
+                
+                <h3>1. Datos Recabados</h3>
+                <p>Para el registro y uso de la plataforma, recabamos los siguientes datos personales: Nombre completo, Edad, Correo Electrónico y Nombre de Usuario. No recabamos datos financieros sensibles de forma directa; los pagos son procesados por pasarelas de pago de terceros certificadas.</p>
+
+                <h3>2. Finalidad del Tratamiento</h3>
+                <p>Sus datos personales serán utilizados exclusivamente para las siguientes finalidades: a) Creación y gestión de su cuenta en la plataforma, b) Verificación de mayoría de edad, c) Envío de alertas de vencimiento de suscripción, y d) Envío de promociones o notificaciones relevantes del servicio.</p>
+
+                <h3>3. Protección de Datos</h3>
+                <p>PickPro implementa medidas de seguridad administrativas y técnicas para proteger sus datos personales contra daño, pérdida, alteración, destrucción o el uso, acceso o tratamiento no autorizado.</p>
+
+                <h3>4. Derechos ARCO</h3>
+                <p>Usted tiene derecho a conocer qué datos personales tenemos de usted (Acceso); solicitar la corrección de su información (Rectificación); que la eliminemos de nuestros registros (Cancelación); así como oponerse al uso de sus datos personales para fines específicos (Oposición). Para ejercer estos derechos, puede enviar una solicitud a nuestro equipo de soporte técnico.</p>
+
+                <h3>5. Cambios al Aviso de Privacidad</h3>
+                <p>Nos reservamos el derecho de efectuar en cualquier momento modificaciones o actualizaciones al presente aviso de privacidad. Estas modificaciones estarán disponibles al público a través de esta misma sección en la plataforma.</p>
+            `
+        };
+
+        function openLegalModal(type, event) {
+            if (event) event.preventDefault();
+            const container = document.getElementById('legal-content-container');
+            container.innerHTML = legalTexts[type];
+            document.getElementById('legal-modal').classList.add('active');
+        }
+
+        function closeLegalModal() {
+            document.getElementById('legal-modal').classList.remove('active');
+        }
+
         // --- CONEXIÓN CON GOOGLE APPS SCRIPT ---
-        // Aquí está tu URL Oficial. ¡Ya no usamos el simulador!
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyrowaQ5ioMtRyU1qM3pCzAsqa1HeY1YA2d0ZC2bwUcrk8SiyPRVV9eJf4B3wCOngX1/exec';
 
         async function fetchAPI(params) {
             try {
-                // Pasamos los parámetros por URL (Método GET seguro contra bloqueos CORS)
                 const url = new URL(SCRIPT_URL);
                 Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
                 
@@ -390,24 +543,48 @@
             document.getElementById('auth-modal').classList.toggle('active');
         }
 
-        async function handleAuth(event) {
+        // Cambiar entre Pestañas Login/Registro
+        function switchTab(tab) {
+            const formLogin = document.getElementById('form-login');
+            const formRegister = document.getElementById('form-register');
+            const tabLoginBtn = document.getElementById('tab-login');
+            const tabRegisterBtn = document.getElementById('tab-register');
+            const authTitle = document.getElementById('auth-title');
+
+            if (tab === 'login') {
+                formLogin.style.display = 'block';
+                formRegister.style.display = 'none';
+                tabLoginBtn.classList.add('active');
+                tabRegisterBtn.classList.remove('active');
+                authTitle.innerText = 'Iniciar Sesión';
+            } else {
+                formLogin.style.display = 'none';
+                formRegister.style.display = 'block';
+                tabLoginBtn.classList.remove('active');
+                tabRegisterBtn.classList.add('active');
+                authTitle.innerText = 'Crear Cuenta';
+            }
+        }
+
+        // Manejar Inicio de Sesión
+        async function handleLogin(event) {
             event.preventDefault();
-            const email = document.getElementById('auth-email').value;
-            const pass = document.getElementById('auth-pass').value;
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-pass').value;
             
-            const btn = document.getElementById('btn-auth');
-            btn.textContent = "Procesando...";
+            const btn = document.getElementById('btn-login');
+            btn.textContent = "Verificando...";
             btn.disabled = true;
 
-            // Llamada al backend (Esto ahora va a tu pestaña "Usuarios")
-            const response = await fetchAPI({ action: 'auth', email: email, password: pass });
+            const response = await fetchAPI({ action: 'login', email: email, password: pass });
 
-            btn.textContent = "Acceder / Registrarse";
+            btn.textContent = "Acceder";
             btn.disabled = false;
 
             if (response.success) {
                 currentUser = {
                     email: response.email,
+                    username: response.username,
                     isVIP: response.isVIP,
                     subEndDate: response.subEndDate ? new Date(response.subEndDate) : null
                 };
@@ -416,11 +593,60 @@
                 updateUserInterface();
                 renderTable();
                 
-                let msg = response.isNew ? `¡Bienvenido a PickPro, ${email}! Tu cuenta ha sido creada en la base de datos.` : `¡Hola de nuevo, ${email}!`;
-                showSimulatedEmail(msg);
-                checkSubscriptionStatus(); // Verifica si ya caducó
+                showSimulatedEmail(`¡Hola de nuevo, ${currentUser.username || email}! Has iniciado sesión.`);
+                checkSubscriptionStatus();
             } else {
-                alert(response.message); // Muestra error (ej. Contraseña incorrecta)
+                alert(response.message);
+            }
+        }
+
+        // Manejar Registro
+        async function handleRegister(event) {
+            event.preventDefault();
+            const name = document.getElementById('reg-name').value;
+            const age = parseInt(document.getElementById('reg-age').value);
+            const username = document.getElementById('reg-username').value;
+            const email = document.getElementById('reg-email').value;
+            const pass = document.getElementById('reg-pass').value;
+
+            // Validación de edad en el front-end
+            if (age < 18) {
+                alert("Debes ser mayor de 18 años para registrarte en la plataforma.");
+                return;
+            }
+
+            const btn = document.getElementById('btn-register');
+            btn.textContent = "Verificando unicidad...";
+            btn.disabled = true;
+
+            const response = await fetchAPI({ 
+                action: 'register', 
+                email: email, 
+                password: pass,
+                name: name,
+                age: age,
+                username: username
+            });
+
+            btn.textContent = "Registrarse Ahora";
+            btn.disabled = false;
+
+            if (response.success) {
+                currentUser = {
+                    email: response.email,
+                    username: response.username,
+                    isVIP: false,
+                    subEndDate: null
+                };
+                
+                toggleAuthModal();
+                updateUserInterface();
+                renderTable();
+                
+                showSimulatedEmail(`¡Bienvenido a PickPro, ${username}! Tu cuenta ha sido creada exitosamente. Adquiere un plan para comenzar.`);
+            } else {
+                // Muestra alerta si el usuario o correo ya existen
+                alert(response.message); 
             }
         }
 
@@ -436,7 +662,6 @@
             btn.textContent = "Procesando pago seguro...";
             btn.disabled = true;
 
-            // Al hacer click, esto buscará el usuario en tu Excel y le sumará un mes a su plan
             const response = await fetchAPI({ action: 'subscribe', email: currentUser.email });
 
             btn.textContent = originalText;
@@ -458,7 +683,6 @@
 
         function simulateExpiration() {
             if (!currentUser || !currentUser.isVIP) return;
-            // Forzamos la fecha a "ayer" para probar qué pasa en la interfaz
             currentUser.subEndDate = new Date(Date.now() - 86400000); 
             checkSubscriptionStatus();
         }
@@ -467,11 +691,11 @@
             if (currentUser && currentUser.isVIP) {
                 const now = new Date();
                 if (now > currentUser.subEndDate) {
-                    currentUser.isVIP = false; // Revocamos acceso
+                    currentUser.isVIP = false;
                     updateUserInterface();
                     renderTable();
                     
-                    showSimulatedEmail(`⚠️ TU SUSCRIPCIÓN HA CADUCADO. Hola ${currentUser.email}, tu plan terminó el ${currentUser.subEndDate.toLocaleDateString()}. Renueva ahora para desbloquear los pronósticos de hoy.`);
+                    showSimulatedEmail(`⚠️ TU SUSCRIPCIÓN HA CADUCADO. Hola ${currentUser.username || currentUser.email}, tu plan terminó el ${currentUser.subEndDate.toLocaleDateString()}. Renueva ahora.`);
                 }
             }
         }
@@ -496,7 +720,7 @@
 
                 authArea.innerHTML = `
                     <div class="user-profile">
-                        <span class="user-email">👤 ${currentUser.email}</span>
+                        <span class="user-email">👤 ${currentUser.username || currentUser.email}</span>
                         ${subText}
                         ${expireBtn}
                     </div>
@@ -511,7 +735,6 @@
             const tbody = document.getElementById('picks-body');
             tbody.innerHTML = ''; 
             
-            // Si no hay datos, mostramos un mensaje
             if (picksData.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 2rem;">No hay picks disponibles por el momento.</td></tr>`;
                 return;
@@ -523,7 +746,6 @@
             };
 
             picksData.forEach(pick => {
-                // Como los datos vienen de Excel, hay que asegurar que usamos las llaves exactas del encabezado
                 let statusClass = pick.Resultado === 'Acertado' ? 'status-win' : 
                                   pick.Resultado === 'Fallado' ? 'status-lose' : 'status-pending';
                 
@@ -564,7 +786,7 @@
             if (currentUser && currentUser.isVIP) {
                 msgElement.style.display = 'none';
             } else if (currentUser && !currentUser.isVIP) {
-                msgElement.innerHTML = `🔒 Hola ${currentUser.email}, tienes cuenta pero <strong>no tienes una suscripción activa</strong>. Elige un plan para ver la tabla.`;
+                msgElement.innerHTML = `🔒 Hola ${currentUser.username || currentUser.email}, tu cuenta está creada pero <strong>no tienes una suscripción activa</strong>. Elige un plan para ver la tabla.`;
                 msgElement.style.display = 'block';
             } else {
                 msgElement.innerHTML = `🔒 Los pronósticos exactos están ocultos. Ingresa o Suscríbete para desbloquear la tabla completa.`;
