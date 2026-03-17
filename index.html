@@ -13,13 +13,10 @@
             --card-border: #232b3e;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
+            --danger: #ff3b30;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -33,287 +30,101 @@
 
         /* Navbar */
         nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem 5%;
-            border-bottom: 1px solid var(--card-border);
-            background-color: rgba(11, 15, 25, 0.9);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1.5rem 5%; border-bottom: 1px solid var(--card-border);
+            background-color: rgba(11, 15, 25, 0.9); position: sticky; top: 0; z-index: 100;
         }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--text-main);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .logo span {
-            color: var(--primary);
-        }
+        .logo { font-size: 1.5rem; font-weight: 800; color: var(--text-main); text-decoration: none; }
+        .logo span { color: var(--primary); }
 
         .auth-toggle {
-            background: rgba(0, 230, 118, 0.1);
-            border: 1px solid var(--primary);
-            color: var(--primary);
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
+            background: rgba(0, 230, 118, 0.1); border: 1px solid var(--primary);
+            color: var(--primary); padding: 0.5rem 1rem; border-radius: 4px;
+            cursor: pointer; font-weight: bold; transition: all 0.3s ease;
         }
+        .auth-toggle:hover { background: var(--primary); color: var(--bg-dark); }
+        .nav-btn-danger { background: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-weight: bold; margin-left: 10px; }
+        .nav-btn-danger:hover { background: var(--danger); color: white; }
 
-        .auth-toggle:hover {
-            background: var(--primary);
-            color: var(--bg-dark);
-        }
+        /* Hero */
+        .hero { text-align: center; padding: 5rem 1rem 3rem; max-width: 800px; margin: 0 auto; }
+        .hero h1 { font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1.1; margin-bottom: 1.5rem; letter-spacing: -0.02em; }
+        .hero h1 span { color: var(--primary); }
+        .hero p { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 2.5rem; }
 
-        /* Hero Section */
-        .hero {
-            text-align: center;
-            padding: 6rem 1rem 4rem;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .hero h1 {
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-            letter-spacing: -0.02em;
-        }
-
-        .hero h1 span {
-            color: var(--primary);
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            margin-bottom: 2.5rem;
-        }
-
-        /* Pricing Section */
-        .pricing-section {
-            padding: 4rem 1rem;
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            align-items: center;
-        }
-
-        .pricing-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 2.5rem;
-            position: relative;
-            transition: transform 0.3s ease, border-color 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-
+        /* Pricing */
+        .pricing-section { padding: 4rem 1rem; max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+        .pricing-card { background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 2.5rem; position: relative; display: flex; flex-direction: column; transition: transform 0.3s ease, border-color 0.3s ease; }
         .pricing-card:hover { transform: translateY(-5px); border-color: #3b4663; }
-        .pricing-card.popular {
-            border-color: var(--primary);
-            box-shadow: 0 10px 30px rgba(0, 230, 118, 0.1);
-            transform: scale(1.05);
-            z-index: 1;
-        }
+        .pricing-card.popular { border-color: var(--primary); box-shadow: 0 10px 30px rgba(0, 230, 118, 0.1); transform: scale(1.05); z-index: 1; }
         .pricing-card.popular:hover { transform: scale(1.05) translateY(-5px); }
-
-        .badge {
-            background-color: var(--primary); color: var(--bg-dark);
-            padding: 0.4rem 1.2rem; border-radius: 20px; font-weight: 700;
-            font-size: 0.75rem; position: absolute; top: -15px; left: 50%;
-            transform: translateX(-50%); text-transform: uppercase;
-        }
-
+        .badge { background-color: var(--primary); color: var(--bg-dark); padding: 0.4rem 1.2rem; border-radius: 20px; font-weight: 700; font-size: 0.75rem; position: absolute; top: -15px; left: 50%; transform: translateX(-50%); text-transform: uppercase; }
         .tier-name { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; }
         .price { font-size: 3rem; font-weight: 800; margin-bottom: 1.5rem; color: white; }
         .price span { font-size: 1rem; color: var(--text-muted); font-weight: 400; }
-        
         .features { list-style: none; margin-bottom: 2.5rem; flex-grow: 1; }
         .features li { margin-bottom: 1rem; display: flex; align-items: flex-start; gap: 0.75rem; color: #cbd5e1; }
         .features li svg { width: 20px; height: 20px; flex-shrink: 0; fill: var(--primary); margin-top: 3px; }
-
-        .cta-button {
-            background-color: rgba(0, 230, 118, 0.1); color: var(--primary);
-            border: 1px solid var(--primary); padding: 1rem; width: 100%;
-            border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer;
-            transition: all 0.3s ease; text-transform: uppercase;
-        }
+        .cta-button { background-color: rgba(0, 230, 118, 0.1); color: var(--primary); border: 1px solid var(--primary); padding: 1rem; width: 100%; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; }
         .cta-button:hover { background-color: var(--primary-hover); color: var(--bg-dark); }
         .cta-button:disabled { opacity: 0.5; cursor: not-allowed; }
         .pricing-card.popular .cta-button { background-color: var(--primary); color: var(--bg-dark); }
 
-        /* History Section & BLUR EFFECTS */
-        .history-section {
-            padding: 4rem 1rem;
-            max-width: 1000px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
+        /* History Table */
+        .history-section { padding: 4rem 1rem; max-width: 1000px; margin: 0 auto; width: 100%; }
         .section-title { text-align: center; font-size: 2rem; margin-bottom: 2rem; }
-
-        .table-container {
-            overflow-x: auto;
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            border: 1px solid var(--card-border);
-        }
-
+        .table-container { overflow-x: auto; background-color: var(--card-bg); border-radius: 12px; border: 1px solid var(--card-border); }
         table { width: 100%; border-collapse: collapse; text-align: left; }
         th, td { padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--card-border); }
         th { background-color: rgba(255, 255, 255, 0.02); font-weight: 600; color: var(--text-muted); text-transform: uppercase; font-size: 0.85rem; }
-
         .status-win { color: var(--primary); font-weight: 600; }
         .status-lose { color: #ff3b30; font-weight: 600; }
         .status-pending { color: #facc15; font-weight: 600; }
+        .locked-cell { position: relative; display: flex; align-items: center; justify-content: center; }
+        .blurred-text { filter: blur(5px); user-select: none; opacity: 0.5; pointer-events: none; }
+        .lock-icon { position: absolute; background-color: rgba(11, 15, 25, 0.9); color: var(--primary); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: bold; border: 1px solid var(--primary); display: flex; align-items: center; gap: 5px; cursor: pointer; z-index: 2; }
+        .lock-icon:hover { background-color: var(--primary); color: var(--bg-dark); }
 
-        /* Efectos VIP / Bloqueado */
-        .locked-cell {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        /* Footer Legal */
+        footer { background-color: #0b0f19; border-top: 1px solid var(--card-border); padding: 3rem 1rem 1rem; margin-top: auto; text-align: center; }
+        .footer-content { max-width: 800px; margin: 0 auto; }
+        .age-badge { background-color: #ff3b30; color: white; padding: 0.3rem 0.6rem; border-radius: 4px; font-weight: bold; font-size: 0.8rem; }
+        .footer-links { display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
+        .footer-links a { color: var(--primary); text-decoration: none; font-size: 0.85rem; cursor: pointer;}
 
-        .blurred-text {
-            filter: blur(5px);
-            user-select: none;
-            opacity: 0.5;
-            pointer-events: none;
-        }
-
-        .lock-icon {
-            position: absolute;
-            background-color: rgba(11, 15, 25, 0.9);
-            color: var(--primary);
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            border: 1px solid var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            cursor: pointer;
-            z-index: 2;
-        }
-
-        .lock-icon:hover {
-            background-color: var(--primary);
-            color: var(--bg-dark);
-        }
-
-        /* --- NUEVOS ESTILOS: Modales y Autenticación --- */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(11, 15, 25, 0.95);
-            display: flex; justify-content: center; align-items: center;
-            z-index: 2000; opacity: 0; pointer-events: none; transition: all 0.3s ease;
-        }
+        /* Modals & Forms */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 15, 25, 0.95); display: flex; justify-content: center; align-items: center; z-index: 2000; opacity: 0; pointer-events: none; transition: all 0.3s ease; }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .auth-panel, .modal-content { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2.5rem; width: 90%; max-width: 450px; text-align: center; max-height: 90vh; overflow-y: auto; position: relative;}
+        .auth-panel input, .modal-content input { width: 100%; padding: 0.8rem; margin-bottom: 1rem; border-radius: 8px; border: 1px solid var(--card-border); background: var(--bg-dark); color: white; font-family: inherit; }
         
-        .auth-panel {
-            background: var(--card-bg); border: 1px solid var(--card-border);
-            border-radius: 12px; padding: 2.5rem; width: 90%; max-width: 400px;
-            text-align: center;
-        }
-        .auth-panel input {
-            width: 100%; padding: 0.8rem; margin-bottom: 1rem; border-radius: 8px;
-            border: 1px solid var(--card-border); background: var(--bg-dark); color: white;
-            font-family: inherit;
-        }
-
-        /* Tabs para Login / Registro */
-        .auth-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 1.5rem;
-        }
-        .auth-tab {
-            flex: 1;
-            padding: 0.8rem;
-            background: transparent;
-            border: 1px solid var(--card-border);
-            color: var(--text-muted);
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-        .auth-tab.active {
-            background: rgba(0, 230, 118, 0.1);
-            color: var(--primary);
-            border-color: var(--primary);
-        }
+        .auth-tabs { display: flex; gap: 10px; margin-bottom: 1.5rem; }
+        .auth-tab { flex: 1; padding: 0.8rem; background: transparent; border: 1px solid var(--card-border); color: var(--text-muted); border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.3s ease; }
+        .auth-tab.active { background: rgba(0, 230, 118, 0.1); color: var(--primary); border-color: var(--primary); }
         
-        .user-profile {
-            display: flex; flex-direction: column; align-items: flex-end;
-        }
-        .user-email { font-weight: bold; font-size: 0.9rem; }
-        .sub-status { font-size: 0.75rem; color: var(--primary); }
-        .sub-status.expired { color: #ff3b30; }
-
-        /* Estilos para Checkboxes y Modales Legales */
-        .checkbox-group {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            margin-bottom: 1rem;
-            text-align: left;
-        }
-        .checkbox-group input[type="checkbox"] {
-            width: auto;
-            margin-top: 4px;
-            cursor: pointer;
-        }
-        .checkbox-group label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            line-height: 1.4;
-        }
-        .checkbox-group a {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .checkbox-group a:hover {
-            text-decoration: underline;
-        }
+        /* Legal Checkboxes */
+        .checkbox-group { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 1rem; text-align: left; }
+        .checkbox-group input[type="checkbox"] { width: auto; margin-top: 4px; cursor: pointer; }
+        .checkbox-group label { font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; }
+        .checkbox-group a { color: var(--primary); text-decoration: none; font-weight: bold; }
         
-        .legal-modal-content {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 2.5rem;
-            width: 90%;
-            max-width: 800px;
-            max-height: 85vh;
-            overflow-y: auto;
-            text-align: left;
-            position: relative;
-        }
+        .legal-modal-content { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2.5rem; width: 90%; max-width: 800px; max-height: 85vh; overflow-y: auto; text-align: left; position: relative; }
         .legal-modal-content h2 { color: var(--primary); margin-bottom: 1rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; }
         .legal-modal-content h3 { color: white; margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.1rem; }
         .legal-modal-content p, .legal-modal-content li { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.8rem; line-height: 1.6; }
+
+        /* Profile Modal Styles */
+        .profile-section { background: var(--bg-dark); padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem; text-align: left; border: 1px solid var(--card-border); }
+        .profile-section label { display: block; font-size: 0.8rem; color: var(--primary); margin-bottom: 0.5rem; text-transform: uppercase; font-weight: bold;}
+        .card-input-container { display: flex; gap: 10px; }
+        .card-input-container input { margin-bottom: 0; }
 
         @media (max-width: 768px) {
             .pricing-card.popular { transform: scale(1); }
             .nav-links { display: none; }
         }
+        @media (max-width: 480px) { .card-input-container { flex-direction: column; } }
+
     </style>
 </head>
 <body>
@@ -324,9 +135,8 @@
             <a href="#planes" class="nav-links" style="color: var(--text-main); text-decoration: none;">Planes</a>
             <a href="#historial" class="nav-links" style="color: var(--text-main); text-decoration: none;">Historial</a>
             
-            <!-- Área de Autenticación Dinámica -->
-            <div id="auth-area">
-                <button class="auth-toggle" onclick="toggleAuthModal()">Ingresar / Registro</button>
+            <div id="auth-area" style="display: flex; align-items: center; gap: 15px;">
+                <button class="auth-toggle" onclick="openModal('auth-modal')">Ingresar / Registro</button>
             </div>
         </div>
     </nav>
@@ -334,51 +144,46 @@
     <main>
         <section class="hero">
             <h1>Convierte tu Pasión en <span>Ganancias Reales</span></h1>
-            <p>Accede a pronósticos deportivos con +68% de acierto mensual. Alimentado en tiempo real por nuestros analistas directamente desde nuestra base de datos en vivo.</p>
+            <p>Accede a pronósticos deportivos con +68% de acierto mensual. Alimentado en tiempo real por nuestra base de datos en vivo.</p>
         </section>
 
+        <!-- Historial / Picks -->
         <section id="historial" class="history-section">
             <h2 class="section-title">Nuestros Últimos Picks</h2>
-            <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">Los datos mostrados se sincronizan automáticamente con nuestra base de datos en vivo.</p>
-            
             <div class="table-container">
                 <table>
                     <thead>
                         <tr>
-                            <th>Fecha</th>
-                            <th>Deporte</th>
-                            <th>Evento</th>
-                            <th>Pronóstico (Pick)</th>
-                            <th>Casa de Apuesta</th>
-                            <th>Cuota</th>
-                            <th>Resultado</th>
+                            <th>Fecha</th><th>Deporte</th><th>Evento</th><th>Pronóstico (Pick)</th><th>Casa</th><th>Cuota</th><th>Resultado</th>
                         </tr>
                     </thead>
                     <tbody id="picks-body">
-                        <tr><td colspan="7" style="text-align: center; padding: 2rem;">Cargando datos del servidor real (Google Sheets)... ⏳</td></tr>
+                        <tr><td colspan="7" style="text-align: center; padding: 2rem;">Cargando datos del servidor... ⏳</td></tr>
                     </tbody>
                 </table>
             </div>
-            
             <div style="text-align: center; margin-top: 1.5rem;">
                 <p id="vip-message" style="color: #facc15; font-size: 0.9rem; font-weight: bold;">
-                    🔒 Los pronósticos exactos están ocultos. Suscríbete para desbloquear la tabla completa.
+                    🔒 Suscríbete para desbloquear la tabla completa.
                 </p>
             </div>
         </section>
 
-        <!-- Sección de Precios -->
+        <!-- Planes -->
         <section id="planes" class="pricing-section">
+            <!-- Plan Free -->
             <article class="pricing-card">
                 <h2 class="tier-name">Novato</h2>
                 <div class="price">$0<span>/mes</span></div>
                 <ul class="features">
                     <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>1 Pick gratuito a la semana</li>
                     <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Estadísticas básicas</li>
+                    <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Acceso al canal público</li>
                 </ul>
-                <button class="cta-button" onclick="toggleAuthModal(); switchTab('register')">Crear Cuenta Gratis</button>
+                <button class="cta-button" onclick="openModal('auth-modal'); switchTab('register')">Crear Cuenta Gratis</button>
             </article>
 
+            <!-- Plan Premium -->
             <article class="pricing-card popular">
                 <div class="badge">Más Elegido</div>
                 <h2 class="tier-name">Premium</h2>
@@ -388,17 +193,53 @@
                     <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Desbloqueo total del Historial</li>
                     <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Guía de gestión de Bankroll</li>
                 </ul>
-                <button id="btn-subscribe" class="cta-button" onclick="simulateCheckout('Premium')">Suscribirse (1 Mes)</button>
+                <button class="cta-button" onclick="simulateCheckout('Premium')">Suscribirse (1 Mes)</button>
+            </article>
+
+            <!-- Plan Whale -->
+            <article class="pricing-card">
+                <h2 class="tier-name">Whale</h2>
+                <div class="price">$999<span>/mes</span></div>
+                <ul class="features">
+                    <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Todo lo del plan Premium</li>
+                    <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Picks en vivo (Live Betting)</li>
+                    <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Alertas instantáneas por WhatsApp</li>
+                    <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Retos escalera exclusivos</li>
+                </ul>
+                <button class="cta-button" onclick="simulateCheckout('Whale')">Convertirse en VIP</button>
             </article>
         </section>
     </main>
 
-    <!-- Modal de Autenticación Múltiple -->
+    <!-- Footer Legal -->
+    <footer>
+        <div class="footer-content">
+            <div style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                <span class="age-badge">+18</span>
+                <span style="color: var(--text-muted); font-size: 0.9rem;">Juega con responsabilidad.</span>
+            </div>
+            
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 1.5rem; line-height: 1.5;">
+                <strong>Aviso Legal:</strong> PickPro ofrece servicios de análisis estadístico e información deportiva. <strong>No somos una casa de apuestas</strong> y no captamos fondos para juegos de azar. Los pronósticos compartidos no garantizan ganancias financieras. Las apuestas deportivas conllevan un alto riesgo y el usuario es el único responsable de sus decisiones y capital.
+            </p>
+
+            <div class="footer-links">
+                <a onclick="openLegalModal('terms', event)">Términos y Condiciones</a>
+                <a onclick="openLegalModal('privacy', event)">Aviso de Privacidad</a>
+            </div>
+
+            <p style="color: #475569; font-size: 0.8rem;">
+                &copy; 2026 PickPro. Todos los derechos reservados.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Modal Autenticación -->
     <div id="auth-modal" class="modal-overlay">
         <div class="auth-panel">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                 <h2 id="auth-title" style="margin: 0;">Iniciar Sesión</h2>
-                <button onclick="toggleAuthModal()" style="background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">&times;</button>
+                <button onclick="closeModal('auth-modal')" style="background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">&times;</button>
             </div>
 
             <div class="auth-tabs">
@@ -406,28 +247,31 @@
                 <button class="auth-tab" id="tab-register" onclick="switchTab('register')">Registrarse</button>
             </div>
 
-            <!-- Formulario de Inicio de Sesión -->
+            <!-- Login Form -->
             <form id="form-login" onsubmit="handleLogin(event)">
                 <input type="email" id="login-email" placeholder="Tu correo electrónico" required>
                 <input type="password" id="login-pass" placeholder="Tu contraseña" required>
                 <button type="submit" id="btn-login" class="cta-button" style="background: var(--primary); color: var(--bg-dark);">Acceder</button>
+                <p style="margin-top: 1rem; font-size: 0.8rem;">
+                    <a href="#" onclick="openModal('forgot-modal'); closeModal('auth-modal');" style="color: var(--primary);">¿Olvidaste tu contraseña?</a>
+                </p>
             </form>
 
-            <!-- Formulario de Registro -->
+            <!-- Register Form -->
             <form id="form-register" onsubmit="handleRegister(event)" style="display: none;">
-                <input type="text" id="reg-name" placeholder="Nombre y Apellidos" required>
-                <input type="number" id="reg-age" placeholder="Edad" min="18" required title="Debes ser mayor de 18 años para apostar">
-                <input type="text" id="reg-username" placeholder="Nombre de usuario (Único)" required>
-                <input type="email" id="reg-email" placeholder="Correo electrónico (Único)" required>
+                <input type="text" id="reg-name" placeholder="Nombre completo" required>
+                <input type="number" id="reg-age" placeholder="Edad (Min. 18)" min="18" required>
+                <input type="text" id="reg-username" placeholder="Nombre de usuario" required>
+                <input type="email" id="reg-email" placeholder="Correo electrónico" required>
                 <input type="password" id="reg-pass" placeholder="Crea una contraseña" required>
                 
                 <div class="checkbox-group">
                     <input type="checkbox" id="reg-terms" required>
-                    <label for="reg-terms">He leído y acepto los <a href="#" onclick="openLegalModal('terms', event)">Términos y Condiciones</a>.</label>
+                    <label for="reg-terms">Acepto los <a href="#" onclick="openLegalModal('terms', event)">Términos y Condiciones</a>.</label>
                 </div>
                 <div class="checkbox-group">
                     <input type="checkbox" id="reg-privacy" required>
-                    <label for="reg-privacy">He leído y acepto el <a href="#" onclick="openLegalModal('privacy', event)">Aviso de Privacidad</a>.</label>
+                    <label for="reg-privacy">Acepto el <a href="#" onclick="openLegalModal('privacy', event)">Aviso de Privacidad</a>.</label>
                 </div>
 
                 <button type="submit" id="btn-register" class="cta-button" style="background: var(--primary); color: var(--bg-dark);">Registrarse Ahora</button>
@@ -435,369 +279,350 @@
         </div>
     </div>
 
-    <!-- Modal Legal (Términos y Privacidad) -->
+    <!-- Modal Recuperar Contraseña -->
+    <div id="forgot-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem;">
+                <h2 style="margin: 0; color: var(--primary);">Recuperar Cuenta</h2>
+                <button onclick="closeModal('forgot-modal')" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;">&times;</button>
+            </div>
+            
+            <div id="step-forgot-1">
+                <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem; text-align: left;">Ingresa el correo con el que te registraste. Te enviaremos un código de seguridad de 6 dígitos.</p>
+                <input type="email" id="forgot-email" placeholder="Tu correo electrónico" required>
+                <button onclick="sendForgotEmail()" id="btn-forgot" class="cta-button" style="background: var(--primary); color: var(--bg-dark);">Enviar Código</button>
+                <p style="margin-top: 1rem; font-size: 0.8rem;"><a href="#" onclick="closeModal('forgot-modal'); openModal('auth-modal');" style="color: var(--text-muted);">Volver a Iniciar Sesión</a></p>
+            </div>
+
+            <div id="step-forgot-2" style="display: none;">
+                <p style="font-size: 0.9rem; color: var(--primary); margin-bottom: 1.5rem;">¡Correo enviado! Revisa tu bandeja de entrada o spam.</p>
+                <input type="text" id="reset-token" placeholder="Código de 6 dígitos (Ej: A1B2C3)" required style="text-transform: uppercase;">
+                <input type="password" id="reset-new-pass" placeholder="Escribe tu nueva contraseña" required>
+                <button onclick="resetPassword()" id="btn-reset" class="cta-button" style="background: var(--primary); color: var(--bg-dark);">Cambiar Contraseña</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Mi Perfil -->
+    <div id="profile-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 600px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                <h2 style="margin: 0; color: var(--primary);">Mi Perfil</h2>
+                <button onclick="closeModal('profile-modal')" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;">&times;</button>
+            </div>
+            
+            <div class="profile-section">
+                <label>ID de Cliente Único</label>
+                <p id="prof-id" style="font-family: monospace; color: white; font-size: 1.1rem; background: rgba(0,0,0,0.3); padding: 5px 10px; border-radius: 4px; display: inline-block;"></p>
+            </div>
+
+            <!-- Actualizar Perfil -->
+            <form onsubmit="updateProfile(event)" class="profile-section">
+                <label>Datos Personales</label>
+                <input type="text" id="prof-name" placeholder="Nombre completo" required>
+                <input type="text" id="prof-username" placeholder="Nombre de Usuario" required>
+                <input type="number" id="prof-age" placeholder="Edad" required>
+                <button type="submit" id="btn-update-prof" class="cta-button" style="padding: 0.8rem; font-size: 0.9rem;">Guardar Cambios</button>
+            </form>
+
+            <!-- Actualizar Tarjeta -->
+            <form onsubmit="updateCard(event)" class="profile-section">
+                <label>Método de Pago</label>
+                <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px;">Para garantizar tu seguridad (Cumplimiento PCI DSS), los datos se encriptan y solo almacenamos los últimos 4 dígitos.</p>
+                <div class="card-input-container">
+                    <input type="text" id="prof-card" placeholder="Número de Tarjeta (16 dígitos)" maxlength="19" required>
+                    <button type="submit" id="btn-update-card" class="cta-button" style="padding: 0.8rem; font-size: 0.9rem; flex-shrink: 0; width: 150px;">Vincular</button>
+                </div>
+            </form>
+
+            <!-- Eliminar Cuenta -->
+            <div class="profile-section" style="border-color: var(--danger); background: rgba(255,59,48,0.05);">
+                <label style="color: var(--danger);">Zona de Peligro</label>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Si eliminas tu cuenta, perderás el acceso VIP inmediatamente y no podrás recuperar tu historial.</p>
+                <button type="button" onclick="document.getElementById('delete-confirm-area').style.display='block'" class="cta-button" style="background: transparent; color: var(--danger); border-color: var(--danger); padding: 0.8rem; font-size: 0.9rem;">Eliminar mi cuenta</button>
+                
+                <div id="delete-confirm-area" style="display: none; margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,59,48,0.2);">
+                    <p style="font-size:0.85rem; color: var(--danger); margin-bottom: 10px;"><b>Esta acción es irreversible.</b> Escribe tu contraseña para confirmar:</p>
+                    <input type="password" id="delete-pass" placeholder="Tu contraseña actual" style="border-color: var(--danger);">
+                    <button type="button" onclick="deleteProfile()" id="btn-delete" class="cta-button" style="background: var(--danger); color: white; border: none; padding: 0.8rem; font-size: 0.9rem;">Confirmar y Eliminar Definitivamente</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Textos Legales -->
     <div id="legal-modal" class="modal-overlay" style="z-index: 2500;">
         <div class="legal-modal-content">
-            <button onclick="closeLegalModal()" style="position: absolute; top: 1.5rem; right: 1.5rem; background: rgba(255,255,255,0.1); border: none; color: white; width: 30px; height: 30px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
-            <div id="legal-content-container">
-                <!-- El contenido se inyecta por JS -->
-            </div>
+            <button onclick="closeModal('legal-modal')" style="position: absolute; top: 1.5rem; right: 1.5rem; background: rgba(255,255,255,0.1); border: none; color: white; width: 30px; height: 30px; border-radius: 50%; font-size: 1.2rem; cursor: pointer;">&times;</button>
+            <div id="legal-content-container"></div>
         </div>
     </div>
 
     <!-- Simulación de Correo (Toast) -->
     <div id="email-toast" style="position: fixed; bottom: 20px; right: 20px; background: #1e293b; border-left: 4px solid #3b82f6; padding: 1rem; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); display: none; z-index: 3000; max-width: 320px;">
-        <p style="margin: 0; font-size: 0.85rem; color: #94a3b8;">📧 <strong>Bandeja de Entrada (Simulada)</strong></p>
+        <p style="margin: 0; font-size: 0.85rem; color: #94a3b8;">📧 <strong>Bandeja de Entrada</strong></p>
         <p id="email-toast-msg" style="margin: 0.8rem 0; font-size: 0.9rem; line-height: 1.4;"></p>
-        <button onclick="this.parentElement.style.display='none'" style="width: 100%; background: #3b82f6; border: none; padding: 0.5rem; border-radius: 4px; color: white; cursor: pointer; font-weight: bold;">Cerrar Correo</button>
+        <button onclick="this.parentElement.style.display='none'" style="width: 100%; background: #3b82f6; border: none; padding: 0.5rem; border-radius: 4px; color: white; cursor: pointer; font-weight: bold;">Cerrar Notificación</button>
     </div>
 
     <script>
-        // --- ESTADO GLOBAL ---
+        // --- ESTADO GLOBAL E INTEGRACIÓN BACKEND ---
         let currentUser = null; 
         let picksData = [];
-
-        // --- TEXTOS LEGALES (BLINDAJE) ---
-        const legalTexts = {
-            terms: `
-                <h2>Términos y Condiciones de Uso</h2>
-                <p>Última actualización: Marzo 2026</p>
-                <h3>1. Naturaleza del Servicio</h3>
-                <p>PickPro es una plataforma dedicada exclusivamente a la provisión de información, análisis estadístico y pronósticos deportivos. <strong>PickPro NO es una casa de apuestas</strong>, no capta fondos para juegos de azar, ni administra el dinero de los usuarios. Todo el contenido es estrictamente informativo y de entretenimiento.</p>
-                
-                <h3>2. Exención de Responsabilidad</h3>
-                <p>Las apuestas deportivas conllevan un alto riesgo financiero. Los pronósticos compartidos en esta plataforma están basados en análisis probabilísticos y <strong>no garantizan ningún resultado económico ni ganancias financieras</strong>. El usuario es 100% responsable de las decisiones que tome con su capital. PickPro y sus analistas no se hacen responsables por pérdidas monetarias directas o indirectas derivadas del uso de nuestra información.</p>
-
-                <h3>3. Requisito de Edad (+18)</h3>
-                <p>El acceso y registro en esta plataforma está estrictamente prohibido para menores de 18 años. Al aceptar estos términos, el usuario declara bajo protesta de decir verdad que es mayor de edad en su jurisdicción. Nos reservamos el derecho de cancelar cuentas que infrinjan esta norma sin previo aviso.</p>
-
-                <h3>4. Suscripciones y Política de No Reembolsos</h3>
-                <p>Al adquirir una suscripción VIP, el usuario obtiene acceso a contenido digital exclusivo e inmediato. Por la naturaleza digital del servicio (información consumible), <strong>no existen devoluciones ni reembolsos</strong> una vez procesado el pago. El usuario puede cancelar la renovación automática de su suscripción en cualquier momento.</p>
-
-                <h3>5. Propiedad Intelectual y Prohibición de Reventa</h3>
-                <p>Los pronósticos, cuotas y análisis proporcionados son propiedad intelectual de PickPro. Está estrictamente prohibida la reventa, redistribución, publicación en redes sociales o grupos de terceros (ej. Telegram, WhatsApp) del contenido exclusivo. La detección de estas prácticas resultará en el baneo permanente de la cuenta y posibles acciones legales.</p>
-            `,
-            privacy: `
-                <h2>Aviso de Privacidad</h2>
-                <p>Última actualización: Marzo 2026</p>
-                <p>En cumplimiento con la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP), PickPro le informa sobre el tratamiento de sus datos.</p>
-                
-                <h3>1. Datos Recabados</h3>
-                <p>Para el registro y uso de la plataforma, recabamos los siguientes datos personales: Nombre completo, Edad, Correo Electrónico y Nombre de Usuario. No recabamos datos financieros sensibles de forma directa; los pagos son procesados por pasarelas de pago de terceros certificadas.</p>
-
-                <h3>2. Finalidad del Tratamiento</h3>
-                <p>Sus datos personales serán utilizados exclusivamente para las siguientes finalidades: a) Creación y gestión de su cuenta en la plataforma, b) Verificación de mayoría de edad, c) Envío de alertas de vencimiento de suscripción, y d) Envío de promociones o notificaciones relevantes del servicio.</p>
-
-                <h3>3. Protección de Datos</h3>
-                <p>PickPro implementa medidas de seguridad administrativas y técnicas para proteger sus datos personales contra daño, pérdida, alteración, destrucción o el uso, acceso o tratamiento no autorizado.</p>
-
-                <h3>4. Derechos ARCO</h3>
-                <p>Usted tiene derecho a conocer qué datos personales tenemos de usted (Acceso); solicitar la corrección de su información (Rectificación); que la eliminemos de nuestros registros (Cancelación); así como oponerse al uso de sus datos personales para fines específicos (Oposición). Para ejercer estos derechos, puede enviar una solicitud a nuestro equipo de soporte técnico.</p>
-
-                <h3>5. Cambios al Aviso de Privacidad</h3>
-                <p>Nos reservamos el derecho de efectuar en cualquier momento modificaciones o actualizaciones al presente aviso de privacidad. Estas modificaciones estarán disponibles al público a través de esta misma sección en la plataforma.</p>
-            `
-        };
-
-        function openLegalModal(type, event) {
-            if (event) event.preventDefault();
-            const container = document.getElementById('legal-content-container');
-            container.innerHTML = legalTexts[type];
-            document.getElementById('legal-modal').classList.add('active');
-        }
-
-        function closeLegalModal() {
-            document.getElementById('legal-modal').classList.remove('active');
-        }
-
-        // --- CONEXIÓN CON GOOGLE APPS SCRIPT ---
+        
+        // El enlace de tu Servidor en Apps Script
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyrowaQ5ioMtRyU1qM3pCzAsqa1HeY1YA2d0ZC2bwUcrk8SiyPRVV9eJf4B3wCOngX1/exec';
 
         async function fetchAPI(params) {
             try {
                 const url = new URL(SCRIPT_URL);
                 Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
-                
                 const response = await fetch(url);
                 return await response.json();
             } catch (error) {
-                console.error("Error Fetch API:", error);
-                return { success: false, message: "Error de conexión con Google Sheets." };
+                console.error(error);
+                return { success: false, message: "Error de conexión con el servidor." };
             }
         }
 
-        // --- FUNCIONES DE INTERACCIÓN Y UI ---
+        // --- MANEJO DE MODALES ---
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
-        async function loadPicks() {
-            const response = await fetchAPI({ action: 'getPicks' });
-            
-            if (response.success && response.data) {
-                picksData = response.data;
-                renderTable();
-            } else {
-                document.getElementById('picks-body').innerHTML = `<tr><td colspan="7" style="color:#ff3b30; text-align:center;">Error cargando los pronósticos o no hay datos en la hoja "Picks". Llena algunas filas en tu Excel.</td></tr>`;
-            }
-        }
-
-        function toggleAuthModal() {
-            document.getElementById('auth-modal').classList.toggle('active');
-        }
-
-        // Cambiar entre Pestañas Login/Registro
         function switchTab(tab) {
-            const formLogin = document.getElementById('form-login');
-            const formRegister = document.getElementById('form-register');
-            const tabLoginBtn = document.getElementById('tab-login');
-            const tabRegisterBtn = document.getElementById('tab-register');
-            const authTitle = document.getElementById('auth-title');
+            document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none';
+            document.getElementById('form-register').style.display = tab === 'register' ? 'block' : 'none';
+            document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+            document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+            document.getElementById('auth-title').innerText = tab === 'login' ? 'Iniciar Sesión' : 'Crear Cuenta';
+        }
 
-            if (tab === 'login') {
-                formLogin.style.display = 'block';
-                formRegister.style.display = 'none';
-                tabLoginBtn.classList.add('active');
-                tabRegisterBtn.classList.remove('active');
-                authTitle.innerText = 'Iniciar Sesión';
+        // --- SISTEMA DE SESIÓN (UI) ---
+        function updateUserInterface() {
+            const authArea = document.getElementById('auth-area');
+            if (currentUser) {
+                authArea.innerHTML = `
+                    <div style="text-align: right; line-height: 1.2;">
+                        <span style="font-weight: bold; color: white;">👤 ${currentUser.username || currentUser.name}</span><br>
+                        <span style="font-size: 0.75rem; font-weight: bold; color: ${currentUser.isVIP ? 'var(--primary)' : 'var(--danger)'}">
+                            ${currentUser.isVIP ? '👑 VIP Activo' : '❌ Cuenta Gratuita'}
+                        </span>
+                    </div>
+                    <button onclick="populateProfileModal(); openModal('profile-modal')" class="auth-toggle">Mi Perfil</button>
+                    <button onclick="logout()" class="nav-btn-danger">Salir</button>
+                `;
             } else {
-                formLogin.style.display = 'none';
-                formRegister.style.display = 'block';
-                tabLoginBtn.classList.remove('active');
-                tabRegisterBtn.classList.add('active');
-                authTitle.innerText = 'Crear Cuenta';
+                authArea.innerHTML = `<button class="auth-toggle" onclick="openModal('auth-modal')">Ingresar / Registro</button>`;
+            }
+            renderTable();
+        }
+
+        function logout() {
+            currentUser = null;
+            updateUserInterface();
+            closeModal('profile-modal');
+        }
+
+        // --- CARGA DE PICKS ---
+        async function loadPicks() {
+            const res = await fetchAPI({ action: 'getPicks' });
+            if (res.success && res.data) {
+                picksData = res.data;
+                renderTable();
             }
         }
 
-        // Manejar Inicio de Sesión
-        async function handleLogin(event) {
-            event.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const pass = document.getElementById('login-pass').value;
+        // --- AUTENTICACIÓN ---
+        async function handleLogin(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-login'); btn.textContent = "Verificando..."; btn.disabled = true;
+            const res = await fetchAPI({ action: 'login', email: document.getElementById('login-email').value, password: document.getElementById('login-pass').value });
+            btn.textContent = "Acceder"; btn.disabled = false;
             
-            const btn = document.getElementById('btn-login');
-            btn.textContent = "Verificando...";
-            btn.disabled = true;
-
-            const response = await fetchAPI({ action: 'login', email: email, password: pass });
-
-            btn.textContent = "Acceder";
-            btn.disabled = false;
-
-            if (response.success) {
-                currentUser = {
-                    email: response.email,
-                    username: response.username,
-                    isVIP: response.isVIP,
-                    subEndDate: response.subEndDate ? new Date(response.subEndDate) : null
-                };
-                
-                toggleAuthModal();
-                updateUserInterface();
-                renderTable();
-                
-                showSimulatedEmail(`¡Hola de nuevo, ${currentUser.username || email}! Has iniciado sesión.`);
-                checkSubscriptionStatus();
-            } else {
-                alert(response.message);
-            }
+            if (res.success) { 
+                currentUser = res; 
+                closeModal('auth-modal'); 
+                updateUserInterface(); 
+            } else { alert(res.message); }
         }
 
-        // Manejar Registro
-        async function handleRegister(event) {
-            event.preventDefault();
-            const name = document.getElementById('reg-name').value;
-            const age = parseInt(document.getElementById('reg-age').value);
-            const username = document.getElementById('reg-username').value;
-            const email = document.getElementById('reg-email').value;
-            const pass = document.getElementById('reg-pass').value;
-
-            // Validación de edad en el front-end
-            if (age < 18) {
-                alert("Debes ser mayor de 18 años para registrarte en la plataforma.");
-                return;
-            }
-
-            const btn = document.getElementById('btn-register');
-            btn.textContent = "Verificando unicidad...";
-            btn.disabled = true;
-
-            const response = await fetchAPI({ 
+        async function handleRegister(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-register'); btn.textContent = "Verificando..."; btn.disabled = true;
+            const res = await fetchAPI({ 
                 action: 'register', 
-                email: email, 
-                password: pass,
-                name: name,
-                age: age,
-                username: username
+                email: document.getElementById('reg-email').value, 
+                password: document.getElementById('reg-pass').value,
+                name: document.getElementById('reg-name').value, 
+                age: document.getElementById('reg-age').value, 
+                username: document.getElementById('reg-username').value
             });
+            btn.textContent = "Registrarse Ahora"; btn.disabled = false;
+            
+            if (res.success) { 
+                currentUser = res; 
+                closeModal('auth-modal'); 
+                updateUserInterface(); 
+                alert("¡Cuenta creada exitosamente! Adquiere un plan para desbloquear el contenido.");
+            } else { alert(res.message); }
+        }
 
-            btn.textContent = "Registrarse Ahora";
-            btn.disabled = false;
+        // --- RECUPERAR CONTRASEÑA ---
+        async function sendForgotEmail() {
+            const email = document.getElementById('forgot-email').value;
+            if(!email) return alert("Ingresa tu correo");
+            const btn = document.getElementById('btn-forgot'); btn.textContent = "Enviando..."; btn.disabled = true;
+            
+            const res = await fetchAPI({ action: 'forgotPassword', email: email });
+            btn.textContent = "Enviar Código"; btn.disabled = false;
+            
+            if(res.success) { 
+                document.getElementById('step-forgot-1').style.display = 'none'; 
+                document.getElementById('step-forgot-2').style.display = 'block'; 
+                showSimulatedEmail(res.message);
+            } else { alert(res.message); }
+        }
 
-            if (response.success) {
-                currentUser = {
-                    email: response.email,
-                    username: response.username,
-                    isVIP: false,
-                    subEndDate: null
-                };
-                
-                toggleAuthModal();
-                updateUserInterface();
-                renderTable();
-                
-                showSimulatedEmail(`¡Bienvenido a PickPro, ${username}! Tu cuenta ha sido creada exitosamente. Adquiere un plan para comenzar.`);
-            } else {
-                // Muestra alerta si el usuario o correo ya existen
-                alert(response.message); 
-            }
+        async function resetPassword() {
+            const email = document.getElementById('forgot-email').value;
+            const token = document.getElementById('reset-token').value;
+            const newPass = document.getElementById('reset-new-pass').value;
+            const btn = document.getElementById('btn-reset'); btn.textContent = "Procesando..."; btn.disabled = true;
+            
+            const res = await fetchAPI({ action: 'resetPassword', email: email, token: token, newPassword: newPass });
+            btn.textContent = "Cambiar Contraseña"; btn.disabled = false;
+            
+            if(res.success) { 
+                alert(res.message); 
+                closeModal('forgot-modal'); 
+                document.getElementById('step-forgot-1').style.display = 'block';
+                document.getElementById('step-forgot-2').style.display = 'none';
+                openModal('auth-modal'); 
+            } else { alert(res.message); }
+        }
+
+        // --- PERFIL Y SEGURIDAD ---
+        function populateProfileModal() {
+            if(!currentUser) return;
+            document.getElementById('prof-id').innerText = currentUser.id || 'Cargando...';
+            document.getElementById('prof-name').value = currentUser.name || '';
+            document.getElementById('prof-username').value = currentUser.username || '';
+            document.getElementById('prof-age').value = currentUser.age || '';
+            document.getElementById('prof-card').value = currentUser.cardLast4 || '';
+            
+            document.getElementById('delete-confirm-area').style.display = 'none';
+            document.getElementById('delete-pass').value = '';
+        }
+
+        async function updateProfile(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-update-prof'); btn.textContent = "Guardando..."; btn.disabled = true;
+            const name = document.getElementById('prof-name').value;
+            const username = document.getElementById('prof-username').value;
+            const age = document.getElementById('prof-age').value;
+            
+            const res = await fetchAPI({ action: 'updateProfile', email: currentUser.email, name: name, username: username, age: age });
+            btn.textContent = "Guardar Cambios"; btn.disabled = false;
+            
+            if (res.success) { 
+                currentUser.name = name; 
+                currentUser.username = username; 
+                currentUser.age = age; 
+                updateUserInterface(); 
+                alert(res.message); 
+            } else { alert(res.message); }
+        }
+
+        async function updateCard(e) {
+            e.preventDefault();
+            const card = document.getElementById('prof-card').value.replace(/\s+/g, '');
+            if(card.length < 15) return alert("Ingresa un número de tarjeta válido (16 dígitos)");
+            
+            const btn = document.getElementById('btn-update-card'); btn.textContent = "..."; btn.disabled = true;
+            const res = await fetchAPI({ action: 'updateCard', email: currentUser.email, cardNumber: card });
+            btn.textContent = "Vincular"; btn.disabled = false;
+            
+            if (res.success) { 
+                currentUser.cardLast4 = res.cardLast4; 
+                document.getElementById('prof-card').value = res.cardLast4; 
+                alert("Tarjeta vinculada y encriptada correctamente."); 
+            } else { alert(res.message); }
+        }
+
+        async function deleteProfile() {
+            const pass = document.getElementById('delete-pass').value;
+            if(!pass) return alert("Debes ingresar tu contraseña para confirmar la eliminación.");
+            
+            const btn = document.getElementById('btn-delete'); btn.textContent = "Eliminando..."; btn.disabled = true;
+            const res = await fetchAPI({ action: 'deleteProfile', email: currentUser.email, password: pass });
+            btn.textContent = "Confirmar y Eliminar Definitivamente"; btn.disabled = false;
+            
+            if (res.success) { 
+                alert(res.message); 
+                closeModal('profile-modal'); 
+                logout(); 
+            } else { alert(res.message); }
         }
 
         async function simulateCheckout(plan) {
-            if (!currentUser) {
-                alert("Por favor, inicia sesión o regístrate primero para poder suscribirte.");
-                toggleAuthModal();
-                return;
-            }
-
-            const btn = document.getElementById('btn-subscribe');
-            const originalText = btn.textContent;
-            btn.textContent = "Procesando pago seguro...";
-            btn.disabled = true;
-
-            const response = await fetchAPI({ action: 'subscribe', email: currentUser.email });
-
-            btn.textContent = originalText;
-            btn.disabled = false;
-
-            if (response.success) {
-                currentUser.isVIP = true;
-                currentUser.subEndDate = new Date(response.subEndDate);
-
-                updateUserInterface();
-                renderTable();
-                
-                alert(`¡Pago exitoso! Tu suscripción está activa hasta el ${currentUser.subEndDate.toLocaleDateString()}. Revisa tu Google Sheets, los datos se han actualizado.`);
-                showSimulatedEmail(`✅ Recibo de pago: Suscripción ${plan} activada. Fecha de vencimiento: ${currentUser.subEndDate.toLocaleDateString()}`);
-            } else {
-                alert("Hubo un error al procesar la suscripción. Intenta de nuevo.");
-            }
-        }
-
-        function simulateExpiration() {
-            if (!currentUser || !currentUser.isVIP) return;
-            currentUser.subEndDate = new Date(Date.now() - 86400000); 
-            checkSubscriptionStatus();
-        }
-
-        function checkSubscriptionStatus() {
-            if (currentUser && currentUser.isVIP) {
-                const now = new Date();
-                if (now > currentUser.subEndDate) {
-                    currentUser.isVIP = false;
-                    updateUserInterface();
-                    renderTable();
-                    
-                    showSimulatedEmail(`⚠️ TU SUSCRIPCIÓN HA CADUCADO. Hola ${currentUser.username || currentUser.email}, tu plan terminó el ${currentUser.subEndDate.toLocaleDateString()}. Renueva ahora.`);
-                }
-            }
-        }
-
-        function showSimulatedEmail(mensaje) {
-            const toast = document.getElementById('email-toast');
-            document.getElementById('email-toast-msg').innerHTML = mensaje;
-            toast.style.display = 'block';
-        }
-
-        function updateUserInterface() {
-            const authArea = document.getElementById('auth-area');
+            if (!currentUser) return alert("Inicia sesión o regístrate para poder suscribirte.");
             
-            if (currentUser) {
-                let subText = currentUser.isVIP 
-                    ? `<span class="sub-status">👑 VIP - Vence: ${currentUser.subEndDate.toLocaleDateString()}</span>` 
-                    : `<span class="sub-status expired">❌ Sin suscripción activa</span>`;
-                
-                let expireBtn = currentUser.isVIP 
-                    ? `<button onclick="simulateExpiration()" style="background: none; border: none; color: #ff3b30; font-size: 0.7rem; cursor: pointer; text-decoration: underline; margin-top: 5px;">[Simular 30 días después]</button>`
-                    : '';
-
-                authArea.innerHTML = `
-                    <div class="user-profile">
-                        <span class="user-email">👤 ${currentUser.username || currentUser.email}</span>
-                        ${subText}
-                        ${expireBtn}
-                    </div>
-                `;
-            } else {
-                authArea.innerHTML = `<button class="auth-toggle" onclick="toggleAuthModal()">Ingresar / Registro</button>`;
-            }
+            let planName = typeof plan === 'string' ? plan : 'Suscripción';
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = "Procesando..."; btn.disabled = true;
+            
+            const res = await fetchAPI({ action: 'subscribe', email: currentUser.email });
+            btn.textContent = originalText; btn.disabled = false;
+            
+            if (res.success) { 
+                currentUser.isVIP = true; 
+                updateUserInterface(); 
+                alert(`Pago Exitoso del plan ${planName}. Ahora eres VIP y tu historial se ha desbloqueado.`); 
+            } else { alert(res.message); }
         }
 
         // --- RENDERIZADO DE TABLA ---
         function renderTable() {
-            const tbody = document.getElementById('picks-body');
-            tbody.innerHTML = ''; 
+            const tbody = document.getElementById('picks-body'); tbody.innerHTML = ''; 
+            if (picksData.length === 0) { tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 2rem;">No hay picks disponibles.</td></tr>`; return; }
             
-            if (picksData.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 2rem;">No hay picks disponibles por el momento.</td></tr>`;
-                return;
-            }
-
-            const sportIcons = {
-                "Fútbol": "⚽", "Baloncesto": "🏀", "Tenis": "🎾", 
-                "Béisbol": "⚾", "Fórmula 1": "🏎️", "Boxeo": "🥊", "eSports": "🎮"
-            };
+            const sportIcons = { "Fútbol": "⚽", "Baloncesto": "🏀", "Tenis": "🎾", "Béisbol": "⚾", "Fórmula 1": "🏎️", "Boxeo": "🥊", "eSports": "🎮" };
 
             picksData.forEach(pick => {
-                let statusClass = pick.Resultado === 'Acertado' ? 'status-win' : 
-                                  pick.Resultado === 'Fallado' ? 'status-lose' : 'status-pending';
-                
                 let userHasAccess = currentUser !== null && currentUser.isVIP;
-
-                let pronosticoHTML = pick.Pronostico || "---";
-                let casaHTML = pick.CasaDeApuesta || "---";
-                let cuotaHTML = pick.Cuota || "---";
-
-                if (!userHasAccess) {
-                    pronosticoHTML = `
-                        <div class="locked-cell">
-                            <span class="blurred-text">${(pick.Pronostico || "Secreto").replace(/[a-zA-Z0-9]/g, '█')}</span>
-                            <div class="lock-icon" onclick="window.location.href='#planes'">🔒 Ver Pick</div>
-                        </div>`;
-                    casaHTML = `<div class="locked-cell"><span class="blurred-text">██████</span></div>`;
-                    cuotaHTML = `<div class="locked-cell"><span class="blurred-text">X.XX</span></div>`;
-                }
-
+                let statusClass = pick.Resultado === 'Acertado' ? 'status-win' : pick.Resultado === 'Fallado' ? 'status-lose' : 'status-pending';
+                
+                let pronosticoHTML = userHasAccess ? pick.Pronostico : `<div class="locked-cell"><span class="blurred-text">██████</span><div class="lock-icon" onclick="window.location.href='#planes'">🔒 Ver Pick</div></div>`;
+                let casaHTML = userHasAccess ? pick.CasaDeApuesta : `<div class="locked-cell"><span class="blurred-text">██████</span></div>`;
+                let cuotaHTML = userHasAccess ? pick.Cuota : `<div class="locked-cell"><span class="blurred-text">X.XX</span></div>`;
                 let icon = sportIcons[pick.Deporte] || "🎯";
 
-                tbody.innerHTML += `
-                    <tr>
-                        <td style="white-space: nowrap;">${pick.Fecha || "-"}</td>
-                        <td style="font-weight: 500; color: #94a3b8; white-space: nowrap;">${icon} ${pick.Deporte || "General"}</td>
-                        <td>${pick.Evento || "-"}</td>
-                        <td>${pronosticoHTML}</td>
-                        <td style="font-weight: 600; color: #cbd5e1;">${casaHTML}</td>
-                        <td>${cuotaHTML}</td>
-                        <td class="${statusClass}">
-                            ${pick.Resultado || "Pendiente"}
-                        </td>
-                    </tr>
-                `;
+                tbody.innerHTML += `<tr><td style="white-space: nowrap;">${pick.Fecha}</td><td style="color:#94a3b8;">${icon} ${pick.Deporte}</td><td>${pick.Evento}</td><td>${pronosticoHTML}</td><td style="font-weight:bold;">${casaHTML}</td><td>${cuotaHTML}</td><td class="${statusClass}">${pick.Resultado}</td></tr>`;
             });
 
-            let msgElement = document.getElementById('vip-message');
-            if (currentUser && currentUser.isVIP) {
-                msgElement.style.display = 'none';
-            } else if (currentUser && !currentUser.isVIP) {
-                msgElement.innerHTML = `🔒 Hola ${currentUser.username || currentUser.email}, tu cuenta está creada pero <strong>no tienes una suscripción activa</strong>. Elige un plan para ver la tabla.`;
-                msgElement.style.display = 'block';
-            } else {
-                msgElement.innerHTML = `🔒 Los pronósticos exactos están ocultos. Ingresa o Suscríbete para desbloquear la tabla completa.`;
-                msgElement.style.display = 'block';
-            }
+            document.getElementById('vip-message').style.display = (currentUser && currentUser.isVIP) ? 'none' : 'block';
         }
 
-        // Iniciar
-        document.addEventListener('DOMContentLoaded', () => {
-            loadPicks();
-        });
+        // --- TEXTOS LEGALES ---
+        const legalTexts = {
+            terms: `<h2>Términos y Condiciones de Uso</h2><p>Última actualización: Marzo 2026</p><h3>1. Naturaleza del Servicio</h3><p>PickPro es una plataforma dedicada exclusivamente a la provisión de información, análisis estadístico y pronósticos deportivos. <strong>PickPro NO es una casa de apuestas</strong>, no capta fondos para juegos de azar.</p><h3>2. Exención de Responsabilidad</h3><p>Las apuestas deportivas conllevan alto riesgo. Los pronósticos <strong>no garantizan resultados</strong>. PickPro no se hace responsable por pérdidas monetarias derivadas del uso de nuestra información.</p><h3>3. Requisito de Edad (+18)</h3><p>El registro está prohibido para menores de 18 años.</p><h3>4. Suscripciones y No Reembolsos</h3><p>Por la naturaleza digital del servicio, <strong>no existen devoluciones ni reembolsos</strong> una vez procesado el pago.</p>`,
+            privacy: `<h2>Aviso de Privacidad</h2><p>Última actualización: Marzo 2026</p><h3>1. Datos Recabados</h3><p>Para el registro recabamos: Nombre, Edad, Correo y Nombre de Usuario. Para pagos, solo almacenamos los últimos 4 dígitos de la tarjeta mediante tokens (Cumplimiento PCI DSS).</p><h3>2. Finalidad</h3><p>Sus datos serán utilizados exclusivamente para la gestión de su cuenta VIP y notificaciones de servicio.</p><h3>3. Protección y Derechos ARCO</h3><p>Implementamos medidas de encriptación en el servidor. Usted tiene derecho a eliminar su cuenta permanentemente desde la sección "Mi Perfil" en cualquier momento.</p>`
+        };
+
+        function openLegalModal(type, event) {
+            if (event) event.preventDefault();
+            document.getElementById('legal-content-container').innerHTML = legalTexts[type];
+            openModal('legal-modal');
+        }
+
+        function showSimulatedEmail(mensaje) {
+            const toast = document.getElementById('email-toast');
+            document.getElementById('email-toast-msg').innerText = mensaje;
+            toast.style.display = 'block';
+        }
+
+        document.addEventListener('DOMContentLoaded', loadPicks);
     </script>
 </body>
 </html>
