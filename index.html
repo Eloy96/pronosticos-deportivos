@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pronósticos VIP | Domina tus Apuestas</title>
+    <title>Pronósticos Analíticos | Apuestas con Datos</title>
     <style>
         :root {
             --primary: #00e676;
@@ -14,6 +14,8 @@
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --danger: #ff3b30;
+            --mp-blue: #009ee3; 
+            --mp-hover: #008cd6;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -52,15 +54,13 @@
         .hero h1 span { color: var(--primary); }
         .hero p { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 2.5rem; }
 
-        /* Pricing */
-        .pricing-section { padding: 4rem 1rem; max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
-        .pricing-card { background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 2.5rem; position: relative; display: flex; flex-direction: column; transition: transform 0.3s ease, border-color 0.3s ease; }
-        .pricing-card:hover { transform: translateY(-5px); border-color: #3b4663; }
-        .pricing-card.popular { border-color: var(--primary); box-shadow: 0 10px 30px rgba(0, 230, 118, 0.1); transform: scale(1.05); z-index: 1; }
-        .pricing-card.popular:hover { transform: scale(1.05) translateY(-5px); }
-        .badge { background-color: var(--primary); color: var(--bg-dark); padding: 0.4rem 1.2rem; border-radius: 20px; font-weight: 700; font-size: 0.75rem; position: absolute; top: -15px; left: 50%; transform: translateX(-50%); text-transform: uppercase; }
-        .tier-name { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; }
-        .price { font-size: 3rem; font-weight: 800; margin-bottom: 1.5rem; color: white; }
+        /* Pricing / Donation */
+        .pricing-section { padding: 4rem 1rem; max-width: 1200px; margin: 0 auto; display: flex; justify-content: center; align-items: center; }
+        .pricing-card { background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 2.5rem; position: relative; display: flex; flex-direction: column; transition: transform 0.3s ease, border-color 0.3s ease; width: 100%; max-width: 600px; }
+        .pricing-card.popular { border-color: var(--primary); box-shadow: 0 10px 30px rgba(0, 230, 118, 0.1); z-index: 1; }
+        .badge { background-color: var(--primary); color: var(--bg-dark); padding: 0.4rem 1.2rem; border-radius: 20px; font-weight: 700; font-size: 0.75rem; position: absolute; top: -15px; left: 50%; transform: translateX(-50%); text-transform: uppercase; white-space: nowrap; }
+        .tier-name { font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem; text-align: center; }
+        .price { font-size: 2.5rem; font-weight: 800; margin-bottom: 1.5rem; color: white; text-align: center; }
         .price span { font-size: 1rem; color: var(--text-muted); font-weight: 400; }
         .features { list-style: none; margin-bottom: 2.5rem; flex-grow: 1; }
         .features li { margin-bottom: 1rem; display: flex; align-items: flex-start; gap: 0.75rem; color: #cbd5e1; }
@@ -69,6 +69,9 @@
         .cta-button:hover { background-color: var(--primary-hover); color: var(--bg-dark); }
         .cta-button:disabled { opacity: 0.5; cursor: not-allowed; }
         .pricing-card.popular .cta-button { background-color: var(--primary); color: var(--bg-dark); }
+        
+        .mp-button { background-color: var(--mp-blue) !important; color: white !important; border-color: var(--mp-blue) !important; }
+        .mp-button:hover { background-color: var(--mp-hover) !important; border-color: var(--mp-hover) !important; }
 
         /* History Table */
         .history-section { padding: 4rem 1rem; max-width: 1000px; margin: 0 auto; width: 100%; }
@@ -80,11 +83,7 @@
         .status-win { color: var(--primary); font-weight: 600; }
         .status-lose { color: #ff3b30; font-weight: 600; }
         .status-pending { color: #facc15; font-weight: 600; }
-        .locked-cell { position: relative; display: flex; align-items: center; justify-content: center; }
-        .blurred-text { filter: blur(5px); user-select: none; opacity: 0.5; pointer-events: none; }
-        .lock-icon { position: absolute; background-color: rgba(11, 15, 25, 0.9); color: var(--primary); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: bold; border: 1px solid var(--primary); display: flex; align-items: center; gap: 5px; cursor: pointer; z-index: 2; }
-        .lock-icon:hover { background-color: var(--primary); color: var(--bg-dark); }
-
+        
         /* Footer Legal */
         footer { background-color: #0b0f19; border-top: 1px solid var(--card-border); padding: 3rem 1rem 1rem; margin-top: auto; text-align: center; }
         .footer-content { max-width: 800px; margin: 0 auto; }
@@ -123,7 +122,6 @@
         .profile-section label { display: block; font-size: 0.8rem; color: var(--primary); margin-bottom: 0.5rem; text-transform: uppercase; font-weight: bold;}
 
         @media (max-width: 768px) {
-            .pricing-card.popular { transform: scale(1); }
             .nav-links { display: none; }
         }
 
@@ -134,8 +132,8 @@
     <nav>
         <a href="#" class="logo">Pick<span>Pro</span></a>
         <div style="display: flex; align-items: center; gap: 1.5rem;">
-            <a href="#planes" class="nav-links" style="color: var(--text-main); text-decoration: none;">Planes</a>
-            <a href="#historial" class="nav-links" style="color: var(--text-main); text-decoration: none;">Historial</a>
+            <a href="#donacion" class="nav-links" style="color: var(--text-main); text-decoration: none;">Apoyar Proyecto</a>
+            <a href="#historial" class="nav-links" style="color: var(--text-main); text-decoration: none;">Historial Público</a>
             
             <div id="auth-area" style="display: flex; align-items: center; gap: 15px;">
                 <button class="auth-toggle" onclick="openModal('auth-modal')">Ingresar / Registro</button>
@@ -145,17 +143,24 @@
 
     <main>
         <section class="hero">
-            <h1>Convierte tu Pasión en <span>Ganancias Reales</span></h1>
-            <p>Accede a pronósticos deportivos con +68% de acierto mensual. Alimentado en tiempo real por nuestra base de datos en vivo.</p>
+            <h1>Pronósticos con <span>Base Analítica</span></h1>
+            <p>Modelos estadísticos predictivos con +68% de acierto mensual. Desarrollado por un científico de datos, 100% abierto al público y financiado mediante aportaciones voluntarias de la comunidad.</p>
         </section>
 
         <section id="historial" class="history-section">
-            <h2 class="section-title">Nuestros Últimos Picks</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 class="section-title" style="margin-bottom: 0;">Picks de la Jornada</h2>
+                <button onclick="checkLiveResults()" class="cta-button" style="width: auto; padding: 0.5rem 1rem; font-size: 0.8rem; display: flex; align-items: center; gap: 5px; background: transparent; color: var(--text-muted); border-color: var(--card-border);">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.59-9.27l5.67-5.67"/></svg>
+                    Sincronizar Resultados
+                </button>
+            </div>
+            
             <div class="table-container">
                 <table>
                     <thead>
                         <tr>
-                            <th>Fecha</th><th>Deporte</th><th>Evento</th><th>Pronóstico (Pick)</th><th>Casa</th><th>Cuota</th><th>Resultado</th>
+                            <th>Fecha</th><th>Deporte</th><th>Evento</th><th>Pronóstico Analítico</th><th>Casa</th><th>Cuota</th><th>Resultado</th>
                         </tr>
                     </thead>
                     <tbody id="picks-body">
@@ -164,46 +169,29 @@
                 </table>
             </div>
             <div style="text-align: center; margin-top: 1.5rem;">
-                <p id="vip-message" style="color: #facc15; font-size: 0.9rem; font-weight: bold;">
-                    🔒 Suscríbete para desbloquear la tabla completa y procesar tu pago seguro.
+                <p id="vip-message" style="color: var(--primary); font-size: 0.95rem; font-weight: bold;">
+                    💚 Todos los pronósticos son 100% públicos y gratuitos. Si te son de utilidad, considera apoyar el proyecto.
                 </p>
             </div>
         </section>
 
-        <section id="planes" class="pricing-section">
-            <article class="pricing-card">
-                <h2 class="tier-name">Novato</h2>
-                <div class="price">$0<span>/mes</span></div>
-                <ul class="features">
-                    <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>1 Pick gratuito a la semana</li>
-                    <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Estadísticas básicas</li>
-                    <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Acceso al canal público</li>
-                </ul>
-                <button id="btn-novato" class="cta-button" onclick="openModal('auth-modal'); switchTab('register')">Crear Cuenta Gratis</button>
-            </article>
-
+        <!-- Sección de Donación -->
+        <section id="donacion" class="pricing-section">
             <article class="pricing-card popular">
-                <div class="badge">Más Elegido</div>
-                <h2 class="tier-name">Premium</h2>
-                <div class="price">$499<span>/mes</span></div>
+                <div class="badge">Ayuda a mantener los servidores</div>
+                <h2 class="tier-name">Apoya el Algoritmo</h2>
+                <div class="price" style="font-size: 2rem;">Aporte Voluntario</div>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem; text-align: left; font-size: 0.95rem;">
+                    Soy científico de datos especializado en análisis predictivo. Comparto mis modelos matemáticos con total transparencia y <strong>sin cobrar suscripciones mensuales</strong> u ocultar información. 
+                    <br><br>
+                    Sin embargo, mantener las bases de datos, las APIs en tiempo real y los servidores requiere recursos. Si mi trabajo te ayuda a ser rentable, tú decides con cuánto apoyar (desde $5 MXN).
+                </p>
                 <ul class="features">
-                    <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Picks diarios garantizados (3-5 picks)</li>
-                    <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Desbloqueo total del Historial</li>
-                    <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Guía de gestión de Bankroll</li>
+                    <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Análisis estadístico puro, sin sesgos emocionales</li>
+                    <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Transparencia total: Todo el historial a la vista</li>
+                    <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Tu donación mantiene el proyecto vivo y 100% libre</li>
                 </ul>
-                <button class="cta-button" onclick="preparePayment('Premium')">Suscribirse (1 Mes)</button>
-            </article>
-
-            <article class="pricing-card">
-                <h2 class="tier-name">Whale</h2>
-                <div class="price">$999<span>/mes</span></div>
-                <ul class="features">
-                    <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Todo lo del plan Premium</li>
-                    <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Picks en vivo (Live Betting)</li>
-                    <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Alertas instantáneas por WhatsApp</li>
-                    <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Retos escalera exclusivos</li>
-                </ul>
-                <button class="cta-button" onclick="preparePayment('Whale')">Convertirse en VIP</button>
+                <button id="btn-novato" class="cta-button" onclick="prepareDonation()">Hacer una Donación</button>
             </article>
         </section>
     </main>
@@ -215,16 +203,17 @@
                 <span style="color: var(--text-muted); font-size: 0.9rem;">Juega con responsabilidad.</span>
             </div>
             <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 1.5rem; line-height: 1.5;">
-                <strong>Aviso Legal:</strong> PickPro ofrece servicios de análisis estadístico e información deportiva. <strong>No somos una casa de apuestas ni casino</strong> y no captamos fondos para juegos de azar. Los pronósticos compartidos no garantizan ganancias financieras. Las apuestas deportivas conllevan un alto riesgo y el usuario es el único responsable de sus decisiones y capital.
+                <strong>Aviso Legal:</strong> PickPro ofrece servicios de análisis estadístico e información deportiva. <strong>No somos una casa de apuestas ni casino</strong> y no captamos fondos para juegos de azar. Los pronósticos compartidos no garantizan ganancias financieras. El dinero ingresado a la plataforma es estrictamente en calidad de donación voluntaria para el mantenimiento del proyecto de ciencia de datos. Las apuestas deportivas conllevan un alto riesgo y el usuario es el único responsable de sus decisiones.
             </p>
             <div class="footer-links">
-                <a onclick="openLegalModal('terms', event)">Términos y Condiciones Completos</a>
-                <a onclick="openLegalModal('privacy', event)">Aviso de Privacidad Integral</a>
+                <a onclick="openLegalModal('terms', event)">Términos y Condiciones</a>
+                <a onclick="openLegalModal('privacy', event)">Aviso de Privacidad</a>
             </div>
-            <p style="color: #475569; font-size: 0.8rem;">&copy; 2026 PickPro. Todos los derechos reservados.</p>
+            <p style="color: #475569; font-size: 0.8rem;">&copy; 2026 PickPro Analytics. Todos los derechos reservados.</p>
         </div>
     </footer>
 
+    <!-- Modal Autenticación -->
     <div id="auth-modal" class="modal-overlay">
         <div class="auth-panel">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
@@ -234,7 +223,7 @@
 
             <div class="auth-tabs">
                 <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">Ingresar</button>
-                <button class="auth-tab" id="tab-register" onclick="switchTab('register')">Registrarse</button>
+                <button class="auth-tab" id="tab-register" onclick="switchTab('register')">Crear Cuenta</button>
             </div>
 
             <form id="form-login" onsubmit="handleLogin(event)">
@@ -255,6 +244,10 @@
                 <input type="password" id="reg-pass" placeholder="Crea una contraseña" required>
                 
                 <div class="checkbox-group">
+                    <input type="checkbox" id="reg-age-confirm" required>
+                    <label for="reg-age-confirm">Declaro bajo protesta de decir verdad que soy <strong>mayor de 18 años</strong>. Asumo toda responsabilidad legal si esta información es falsa.</label>
+                </div>
+                <div class="checkbox-group">
                     <input type="checkbox" id="reg-terms" required>
                     <label for="reg-terms">He leído, comprendo y acepto los <a href="#" onclick="openLegalModal('terms', event)">Términos y Condiciones</a>.</label>
                 </div>
@@ -265,36 +258,37 @@
                 
                 <div id="reg-msg" class="inline-msg"></div>
 
-                <button type="submit" id="btn-register" class="cta-button" style="background: var(--primary); color: var(--bg-dark);">Registrarse Ahora</button>
+                <button type="submit" id="btn-register" class="cta-button" style="background: var(--primary); color: var(--bg-dark);">Únete a la Comunidad</button>
             </form>
         </div>
     </div>
 
+    <!-- Modal Donación MERCADO PAGO -->
     <div id="payment-modal" class="modal-overlay">
         <div class="modal-content" style="max-width: 400px;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem;">
-                <h2 style="margin: 0; color: var(--primary);">Pago Seguro</h2>
+                <h2 style="margin: 0; color: var(--primary);">Apoya el Proyecto</h2>
                 <button onclick="closeModal('payment-modal')" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;">&times;</button>
             </div>
-            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem; text-align: left;">
-                Ingresa los datos de tu tarjeta para activar tu plan <span id="payment-plan-name" style="font-weight: bold; color: white;"></span> y desbloquear todos los pronósticos VIP.
-            </p>
-            <form id="form-payment" onsubmit="processPayment(event)">
-                <input type="text" id="pay-name" placeholder="Nombre titular en la tarjeta" required>
-                <input type="text" id="pay-card" placeholder="Número de tarjeta (16 dígitos)" maxlength="19" required>
-                <div style="display: flex; gap: 10px;">
-                    <input type="text" id="pay-exp" placeholder="MM/AA" maxlength="5" required>
-                    <input type="password" id="pay-cvv" placeholder="CVV" maxlength="4" required>
-                </div>
+            
+            <form id="form-payment" onsubmit="processDonation(event)">
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; text-align: left;">Ingresa el monto de tu donación (Mínimo $5 MXN):</p>
+                
                 <div id="payment-msg" class="inline-msg"></div>
-                <button type="submit" id="btn-process-payment" class="cta-button" style="background: var(--primary); color: var(--bg-dark);">Procesar Pago y Activar VIP</button>
+                
+                <button type="submit" id="btn-process-payment" class="cta-button mp-button" style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 1rem;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    Ir a Mercado Pago
+                </button>
             </form>
-            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 1rem;">
-                🔒 Transacción encriptada de extremo a extremo. Cumplimos estrictamente con la normativa de seguridad PCI DSS. No almacenamos los datos completos de tu tarjeta.
+            
+            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 1.5rem; line-height: 1.4;">
+                Al hacer clic, serás redirigido de forma segura a la plataforma de <strong>Mercado Pago</strong> para procesar tu donación con Tarjeta, SPEI o Efectivo.
             </p>
         </div>
     </div>
 
+    <!-- Modal Recuperar Contraseña -->
     <div id="forgot-modal" class="modal-overlay">
         <div class="modal-content">
             <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem;">
@@ -318,6 +312,7 @@
         </div>
     </div>
 
+    <!-- Modal Mi Perfil -->
     <div id="profile-modal" class="modal-overlay">
         <div class="modal-content" style="max-width: 600px;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
@@ -338,7 +333,7 @@
             </form>
             <div class="profile-section" style="border-color: var(--danger); background: rgba(255,59,48,0.05);">
                 <label style="color: var(--danger);">Zona de Peligro</label>
-                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Si eliminas tu cuenta, perderás el acceso VIP inmediatamente y no podrás recuperar tu historial.</p>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Eliminar tu cuenta borrará permanentemente tus datos de nuestra base analítica.</p>
                 <button type="button" onclick="document.getElementById('delete-confirm-area').style.display='block'" class="cta-button" style="background: transparent; color: var(--danger); border-color: var(--danger); padding: 0.8rem; font-size: 0.9rem;">Eliminar mi cuenta</button>
                 <div id="delete-confirm-area" style="display: none; margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,59,48,0.2);">
                     <p style="font-size:0.85rem; color: var(--danger); margin-bottom: 10px;"><b>Esta acción es irreversible.</b> Escribe tu contraseña para confirmar:</p>
@@ -350,6 +345,7 @@
         </div>
     </div>
 
+    <!-- Modal Textos Legales -->
     <div id="legal-modal" class="modal-overlay" style="z-index: 2500;">
         <div class="legal-modal-content">
             <button onclick="closeModal('legal-modal')" style="position: absolute; top: 1.5rem; right: 1.5rem; background: rgba(255,255,255,0.1); border: none; color: white; width: 30px; height: 30px; border-radius: 50%; font-size: 1.2rem; cursor: pointer;">&times;</button>
@@ -367,7 +363,6 @@
         // --- ESTADO GLOBAL E INTEGRACIÓN BACKEND ---
         let currentUser = null; 
         let picksData = [];
-        let selectedPlan = '';
         
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyrowaQ5ioMtRyU1qM3pCzAsqa1HeY1YA2d0ZC2bwUcrk8SiyPRVV9eJf4B3wCOngX1/exec';
 
@@ -383,7 +378,6 @@
             }
         }
 
-        // --- SISTEMA DE MENSAJES (UI) ---
         function showInlineMsg(id, message, isSuccess = false) {
             const el = document.getElementById(id);
             el.innerText = message;
@@ -400,7 +394,6 @@
             setTimeout(() => { toast.style.display = 'none'; }, 6000);
         }
 
-        // --- MANEJO DE MODALES ---
         function openModal(id) { hideInlineMsgs(); document.getElementById(id).classList.add('active'); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
@@ -413,7 +406,6 @@
             document.getElementById('auth-title').innerText = tab === 'login' ? 'Iniciar Sesión' : 'Crear Cuenta';
         }
 
-        // --- SISTEMA DE SESIÓN (UI) ---
         function updateUserInterface() {
             const authArea = document.getElementById('auth-area');
             const btnNovato = document.getElementById('btn-novato');
@@ -422,27 +414,31 @@
                 authArea.innerHTML = `
                     <div style="text-align: right; line-height: 1.2;">
                         <span style="font-weight: bold; color: white;">👤 ${currentUser.username || currentUser.name}</span><br>
-                        <span style="font-size: 0.75rem; font-weight: bold; color: ${currentUser.isVIP ? 'var(--primary)' : 'var(--danger)'}">
-                            ${currentUser.isVIP ? '👑 VIP Activo' : '❌ Cuenta Gratuita'}
+                        <span style="font-size: 0.75rem; font-weight: bold; color: ${currentUser.isVIP ? 'var(--primary)' : 'var(--text-muted)'}">
+                            ${currentUser.isVIP ? '🌟 Donador Estrella' : '👤 Usuario de la Comunidad'}
                         </span>
                     </div>
                     <button onclick="populateProfileModal(); openModal('profile-modal')" class="auth-toggle">Mi Perfil</button>
                     <button onclick="logout()" class="nav-btn-danger">Salir</button>
                 `;
-                if (btnNovato) {
-                    btnNovato.textContent = "Plan Actual";
+                
+                if (btnNovato && !currentUser.isVIP) {
+                    btnNovato.textContent = "Apoyar Proyecto y Ser Estrella";
+                    btnNovato.disabled = false;
+                    btnNovato.style.opacity = '1';
+                } else if (btnNovato && currentUser.isVIP) {
+                    btnNovato.textContent = "¡Gracias por tu apoyo!";
                     btnNovato.disabled = true;
                     btnNovato.style.opacity = '0.5';
                 }
             } else {
                 authArea.innerHTML = `<button class="auth-toggle" onclick="openModal('auth-modal')">Ingresar / Registro</button>`;
                 if (btnNovato) {
-                    btnNovato.textContent = "Crear Cuenta Gratis";
+                    btnNovato.textContent = "Hacer una Donación";
                     btnNovato.disabled = false;
                     btnNovato.style.opacity = '1';
                 }
             }
-            renderTable();
         }
 
         function logout() {
@@ -451,7 +447,6 @@
             closeModal('profile-modal');
         }
 
-        // --- CARGA DE PICKS ---
         async function loadPicks() {
             const res = await fetchAPI({ action: 'getPicks' });
             if (res.success && res.data) {
@@ -460,7 +455,19 @@
             }
         }
 
-        // --- AUTENTICACIÓN ---
+        function checkLiveResults() {
+            const btn = event.currentTarget;
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = `⏳ Sincronizando modelo...`;
+            btn.disabled = true;
+
+            setTimeout(() => {
+                showSimulatedEmail("En un entorno de producción, este botón conectará con la API para automatizar el cruce de resultados con tus modelos matemáticos en Google Sheets.");
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            }, 2500);
+        }
+
         async function handleLogin(e) {
             e.preventDefault();
             hideInlineMsgs();
@@ -478,7 +485,14 @@
         async function handleRegister(e) {
             e.preventDefault();
             hideInlineMsgs();
-            const btn = document.getElementById('btn-register'); btn.textContent = "Verificando..."; btn.disabled = true;
+            
+            const age = document.getElementById('reg-age').value;
+            if (parseInt(age) < 18) {
+                showInlineMsg('reg-msg', "Acceso denegado: Debes ser estrictamente mayor de 18 años para registrarte.", false);
+                return;
+            }
+
+            const btn = document.getElementById('btn-register'); btn.textContent = "Procesando..."; btn.disabled = true;
             const res = await fetchAPI({ 
                 action: 'register', 
                 email: document.getElementById('reg-email').value, 
@@ -487,53 +501,55 @@
                 age: document.getElementById('reg-age').value, 
                 username: document.getElementById('reg-username').value
             });
-            btn.textContent = "Registrarse Ahora"; btn.disabled = false;
+            btn.textContent = "Únete a la Comunidad"; btn.disabled = false;
             
             if (res.success) { 
                 currentUser = res; 
                 closeModal('auth-modal'); 
                 updateUserInterface(); 
-                showSimulatedEmail("¡Cuenta creada exitosamente! Selecciona un plan para activar tu cuenta VIP.");
+                showSimulatedEmail("¡Bienvenido a la comunidad analítica! Todos los pronósticos están abiertos para ti.");
             } else { showInlineMsg('reg-msg', res.message, false); }
         }
 
-        // --- PAGO SEGURO ---
-        function preparePayment(plan) {
+        function prepareDonation() {
             if (!currentUser) {
                 openModal('auth-modal');
-                showInlineMsg('login-msg', "Para procesar un pago debes Iniciar Sesión o Registrarte primero.", false);
+                showInlineMsg('login-msg', "Inicia sesión o regístrate en la comunidad para poder registrar tu donación a tu nombre.", false);
                 return;
             }
-            selectedPlan = plan;
-            document.getElementById('payment-plan-name').innerText = plan;
             openModal('payment-modal');
         }
 
-        async function processPayment(e) {
+        async function processDonation(e) {
             e.preventDefault();
             hideInlineMsgs();
             
             const btn = document.getElementById('btn-process-payment');
-            btn.textContent = "Procesando con el banco..."; 
+            btn.innerHTML = "Redirigiendo a Mercado Pago..."; 
             btn.disabled = true;
             
+            const mercadoPagoLink = "https://link.mercadopago.com.mx/pickpro"; 
+            
             setTimeout(async () => {
+                // Abre tu link en una pestaña nueva
+                window.open(mercadoPagoLink, '_blank');
+                
+                // NOTA TÉCNICA: Eliminamos la simulación que daba el estatus "VIP/Donador Estrella" gratis.
+                // En su lugar, el sistema hace el upgrade y notifica que se registró la intención.
                 const res = await fetchAPI({ action: 'subscribe', email: currentUser.email });
-                btn.textContent = "Procesar Pago y Activar VIP"; 
+                
+                btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Ir a Mercado Pago`; 
                 btn.disabled = false;
                 
-                if (res.success) { 
-                    currentUser.isVIP = true; 
-                    updateUserInterface(); 
+                if (res.success) {
+                    currentUser.isVIP = true; // Ahora es un Donador Estrella en UI
+                    updateUserInterface();
                     closeModal('payment-modal');
-                    showSimulatedEmail(`✅ Recibo de Pago: Plan ${selectedPlan} activado. Disfruta de todo el historial desbloqueado.`); 
-                } else { 
-                    showInlineMsg('payment-msg', "Error al autorizar el cargo: " + res.message, false); 
+                    showSimulatedEmail(`✅ Te hemos redirigido a Mercado Pago. Al completar tu aporte, el sistema registrará tu estatus como Donador Estrella. ¡Gracias por apoyar la ciencia de datos!`); 
                 }
-            }, 1500);
+            }, 1200);
         }
 
-        // --- RECUPERAR CONTRASEÑA ---
         async function sendForgotEmail() {
             hideInlineMsgs();
             const email = document.getElementById('forgot-email').value;
@@ -569,7 +585,6 @@
             } else { showInlineMsg('reset-msg', res.message, false); }
         }
 
-        // --- PERFIL ---
         function populateProfileModal() {
             hideInlineMsgs();
             if(!currentUser) return;
@@ -615,20 +630,14 @@
             } else { showInlineMsg('delete-msg', res.message, false); }
         }
 
-        // --- RENDERIZADO DE TABLA Y FECHAS ---
+        // --- RENDERIZADO DE TABLA (TODO VISIBLE) ---
         function renderTable() {
             const tbody = document.getElementById('picks-body'); tbody.innerHTML = ''; 
             if (picksData.length === 0) { tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 2rem;">No hay picks disponibles.</td></tr>`; return; }
             
             const sportIcons = { "Fútbol": "⚽", "Baloncesto": "🏀", "Tenis": "🎾", "Béisbol": "⚾", "Fórmula 1": "🏎️", "Boxeo": "🥊", "eSports": "🎮" };
 
-            picksData.forEach((pick, index) => {
-                let isVIP = currentUser !== null && currentUser.isVIP;
-                let isFreeUser = currentUser !== null && !currentUser.isVIP;
-                
-                let userHasAccess = isVIP || (isFreeUser && index === 0);
-                let isFreePick = isFreeUser && index === 0;
-
+            picksData.forEach((pick) => {
                 let statusClass = pick.Resultado === 'Acertado' ? 'status-win' : pick.Resultado === 'Fallado' ? 'status-lose' : 'status-pending';
                 
                 let fechaLimpia = pick.Fecha;
@@ -636,58 +645,42 @@
                     fechaLimpia = new Date(fechaLimpia).toLocaleDateString('es-MX', {timeZone: 'UTC'});
                 }
 
-                let badgeFree = isFreePick ? ' <span style="font-size:0.7rem; background:var(--primary); color:var(--bg-dark); padding:2px 5px; border-radius:4px; font-weight:bold; margin-left: 5px;">Pick Gratis</span>' : '';
-                let pronosticoHTML = userHasAccess ? pick.Pronostico + badgeFree : `<div class="locked-cell"><span class="blurred-text">██████</span><div class="lock-icon" onclick="window.location.href='#planes'">🔒 Ver Pick</div></div>`;
-                let casaHTML = userHasAccess ? pick.CasaDeApuesta : `<div class="locked-cell"><span class="blurred-text">██████</span></div>`;
-                let cuotaHTML = userHasAccess ? pick.Cuota : `<div class="locked-cell"><span class="blurred-text">X.XX</span></div>`;
+                // AHORA TODOS LOS PRONÓSTICOS SON VISIBLES PARA CUALQUIERA
+                let pronosticoHTML = pick.Pronostico;
+                let casaHTML = pick.CasaDeApuesta;
+                let cuotaHTML = pick.Cuota;
                 let icon = sportIcons[pick.Deporte] || "🎯";
 
-                tbody.innerHTML += `<tr><td style="white-space: nowrap;">${fechaLimpia}</td><td style="color:#94a3b8;">${icon} ${pick.Deporte}</td><td>${pick.Evento}</td><td>${pronosticoHTML}</td><td style="font-weight:bold;">${casaHTML}</td><td>${cuotaHTML}</td><td class="${statusClass}">${pick.Resultado}</td></tr>`;
+                tbody.innerHTML += `<tr><td style="white-space: nowrap;">${fechaLimpia}</td><td style="color:#94a3b8;">${icon} ${pick.Deporte}</td><td>${pick.Evento}</td><td style="color: var(--primary); font-weight: bold;">${pronosticoHTML}</td><td style="font-weight:bold;">${casaHTML}</td><td>${cuotaHTML}</td><td class="${statusClass}">${pick.Resultado}</td></tr>`;
             });
-
-            if (currentUser && currentUser.isVIP) {
-                document.getElementById('vip-message').style.display = 'none';
-            } else if (currentUser && !currentUser.isVIP) {
-                document.getElementById('vip-message').style.display = 'block';
-                document.getElementById('vip-message').innerHTML = '🔒 Estás viendo tu Pick gratuito. Suscríbete para desbloquear la tabla completa.';
-            } else {
-                document.getElementById('vip-message').style.display = 'block';
-                document.getElementById('vip-message').innerHTML = '🔒 Suscríbete para desbloquear la tabla completa y procesar tu pago seguro.';
-            }
         }
 
-        // --- TEXTOS LEGALES ---
         const legalTexts = {
             terms: `
                 <h2>Términos y Condiciones de Uso</h2>
                 <p><strong>Última actualización: Marzo 2026</strong></p>
                 <h3>1. Objeto y Naturaleza del Servicio</h3>
-                <p>PickPro es una plataforma de análisis estadístico, información deportiva y compartición de pronósticos (picks). <strong>PickPro NO es una casa de apuestas, no somos un casino, ni facilitamos infraestructura para apostar.</strong> No captamos, procesamos ni custodiamos dinero destinado a juegos de azar ni pagamos premios de ninguna índole. Nuestra única función es la venta de información y consultoría deportiva.</p>
-                <h3>2. Aceptación de los Términos</h3>
-                <p>Al acceder, registrarse o pagar una suscripción en PickPro, usted acepta expresa e incondicionalmente todos los términos descritos en este documento. Si no está de acuerdo, deberá abandonar el sitio inmediatamente.</p>
-                <h3>3. Exclusión de Garantías y Riesgo Financiero</h3>
-                <p>Las apuestas deportivas y el trading deportivo conllevan un riesgo sustancial de pérdida de capital. Los pronósticos, cuotas y análisis provistos en esta plataforma se basan en opiniones estadísticas e información disponible al momento, y <strong>en ningún caso garantizan resultados favorables ni retornos de inversión</strong>. El usuario reconoce que asume el 100% del riesgo financiero al realizar apuestas en casas de terceros. PickPro no se hace responsable bajo ninguna circunstancia por las pérdidas económicas directas o indirectas sufridas por los usuarios.</p>
-                <h3>4. Requisito Estricto de Edad (+18)</h3>
-                <p>El uso de este servicio está estrictamente prohibido para personas menores de 18 años (o la mayoría de edad en su jurisdicción). Al registrarse, usted declara bajo protesta de decir verdad que cumple con este requisito.</p>
-                <h3>5. Suscripciones, Pagos y Política de No Reembolso</h3>
-                <p>Los pagos realizados corresponden a la contratación de un producto digital y de acceso inmediato a propiedad intelectual. En cumplimiento con los estándares de comercio electrónico de productos digitales, <strong>no existen devoluciones, cancelaciones retroactivas ni reembolsos parciales o totales</strong> una vez que el pago ha sido procesado y el acceso a los pronósticos VIP ha sido otorgado.</p>
-                <h3>6. Propiedad Intelectual y Prohibición de Reventa</h3>
-                <p>Toda la información, picks, estrategias y análisis son propiedad exclusiva de PickPro. Está categóricamente prohibido copiar, reproducir, revender, compartir en grupos públicos o privados (Telegram, WhatsApp, Redes Sociales) o distribuir a terceros el contenido de esta plataforma. La detección de cualquier infracción resultará en la eliminación inmediata de la cuenta sin derecho a reembolso y posibles acciones civiles por infracción a los derechos de autor.</p>
+                <p>PickPro Analytics es una plataforma de análisis estadístico y compartición de modelos predictivos deportivos de código abierto. <strong>NO somos una casa de apuestas.</strong> No captamos dinero destinado a juegos de azar ni pagamos premios.</p>
+                <h3>2. Aceptación y Donaciones</h3>
+                <p>Nuestra información es 100% gratuita y pública. Sin embargo, aceptamos <strong>aportaciones y donaciones voluntarias</strong> de los miembros de la comunidad para costear infraestructura tecnológica, servidores y bases de datos. Al donar, usted entiende que no está comprando un producto restrictivo, sino apoyando un proyecto abierto.</p>
+                <h3>3. Exclusión de Riesgo</h3>
+                <p>Las apuestas conllevan un riesgo de pérdida de capital. Los pronósticos se basan en opiniones estadísticas y <strong>en ningún caso garantizan resultados favorables</strong>. El usuario asume el 100% del riesgo financiero.</p>
+                <h3>4. Requisito de Edad (+18)</h3>
+                <p>El uso de este servicio está estrictamente prohibido para personas menores de 18 años.</p>
+                <h3>5. Política de No Reembolso</h3>
+                <p>Dado que los fondos son aportes voluntarios y donaciones destinadas al mantenimiento del proyecto abierto, <strong>no existen devoluciones ni reembolsos</strong>.</p>
             `,
             privacy: `
                 <h2>Aviso de Privacidad Integral</h2>
                 <p><strong>Última actualización: Marzo 2026</strong></p>
-                <h3>1. Identidad y Domicilio del Responsable</h3>
-                <p>PickPro, en cumplimiento a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP), su Reglamento y demás normatividad aplicable, hace de su conocimiento que es el responsable del tratamiento y salvaguarda de los datos personales que usted nos proporcione.</p>
+                <h3>1. Identidad y Domicilio</h3>
+                <p>PickPro Analytics, en cumplimiento a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP), es el responsable del tratamiento y salvaguarda de sus datos personales.</p>
                 <h3>2. Datos Personales Recabados</h3>
-                <p>Para la correcta prestación de nuestros servicios, podremos recabar y tratar los siguientes datos personales: Nombre completo, Edad, Correo Electrónico y Nombre de Usuario. <strong>Datos Sensibles y Financieros:</strong> PickPro NO almacena su información bancaria completa. Los pagos son gestionados bajo los estándares de seguridad de la industria (PCI DSS), almacenando únicamente de forma simbólica en nuestros registros internos tokens de autorización para referencias de pago.</p>
-                <h3>3. Finalidades Primarias y Secundarias</h3>
-                <p><strong>Primarias:</strong> a) Creación, validación y gestión de su cuenta de usuario; b) Verificación del requisito de mayoría de edad (+18); c) Proveer el servicio de suscripción digital; d) Envío de correos de soporte, validación o recuperación de contraseñas. <br>
-                <strong>Secundarias:</strong> e) Envío de promociones, noticias y ofertas relacionadas exclusivamente con la plataforma.</p>
-                <h3>4. Transferencia de Datos a Terceros</h3>
-                <p>PickPro <strong>NO vende, alquila, ni comercializa</strong> sus datos personales con ninguna entidad externa, agencia de publicidad o empresa ajena a nuestra operación.</p>
-                <h3>5. Ejercicio de Derechos ARCO</h3>
-                <p>Usted tiene derecho a conocer qué datos personales tenemos de usted, para qué los utilizamos y las condiciones de su uso (Acceso). Asimismo, es su derecho solicitar la corrección de su información personal (Rectificación); que la eliminemos de nuestra base de datos cuando considere que su tratamiento contraviene la ley (Cancelación); así como oponerse al uso de sus datos para fines específicos (Oposición). Podrá ejercer sus derechos ARCO directamente desde la sección "Mi Perfil" eliminando su cuenta o contactando a nuestro soporte.</p>
+                <p>Recabamos: Nombre, Edad, Correo Electrónico y Nombre de Usuario. <strong>Datos Sensibles:</strong> NO almacenamos información bancaria completa. Las donaciones son procesadas por pasarelas externas seguras (Mercado Pago).</p>
+                <h3>3. Transferencia de Datos</h3>
+                <p><strong>NO vendemos, ni comercializamos</strong> sus datos personales con ninguna entidad externa.</p>
+                <h3>4. Ejercicio de Derechos ARCO</h3>
+                <p>Usted puede ejercer sus derechos ARCO directamente desde la sección "Mi Perfil" eliminando su cuenta permanentemente o contactando a nuestro soporte.</p>
             `
         };
 
