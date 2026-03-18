@@ -83,7 +83,7 @@
         .status-win { color: var(--primary); font-weight: 600; }
         .status-lose { color: #ff3b30; font-weight: 600; }
         .status-pending { color: #facc15; font-weight: 600; }
-
+        
         /* Marcadores Estadísticos */
         .stats-container { display: flex; gap: 1rem; margin-bottom: 2rem; justify-content: center; flex-wrap: wrap; }
         .stat-box { background: var(--card-bg); border: 1px solid var(--card-border); padding: 1.5rem; border-radius: 12px; text-align: center; min-width: 140px; flex: 1; max-width: 200px;}
@@ -95,7 +95,7 @@
         .stat-box.yield .stat-value { color: var(--mp-blue); }
         .stat-label { display: block; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: bold; margin-bottom: 0.5rem; letter-spacing: 0.5px;}
         .stat-value { display: block; font-size: 2.2rem; font-weight: 800; line-height: 1; }
-        
+
         /* Footer Legal */
         footer { background-color: #0b0f19; border-top: 1px solid var(--card-border); padding: 3rem 1rem 1rem; margin-top: auto; text-align: center; }
         .footer-content { max-width: 800px; margin: 0 auto; }
@@ -148,7 +148,6 @@
             <a href="#historial" class="nav-links" style="color: var(--text-main); text-decoration: none;">Historial Público</a>
             
             <div id="auth-area" style="display: flex; align-items: center; gap: 15px;">
-                <!-- Añadí la variable pendingDonationAction=false para limpiar intenciones pasadas -->
                 <button class="auth-toggle" onclick="pendingDonationAction = false; openModal('auth-modal')">Ingresar / Registro</button>
             </div>
         </div>
@@ -302,6 +301,7 @@
             
             <form id="form-payment" onsubmit="processDonation(event)">
                 <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; text-align: left;">Ingresa el monto de tu donación (Mínimo $5 MXN):</p>
+                <input type="number" id="pay-amount" placeholder="Monto a donar (Ej. 50)" min="5" required style="font-weight: bold; font-size: 1.5rem; color: var(--mp-blue); background-color: rgba(0, 158, 227, 0.05); border-color: var(--mp-blue); text-align: center; padding: 1rem; width: 100%; border-radius: 8px;">
                 
                 <div id="payment-msg" class="inline-msg"></div>
                 
@@ -392,7 +392,7 @@
         // --- ESTADO GLOBAL E INTEGRACIÓN BACKEND ---
         let currentUser = null; 
         let picksData = [];
-        let pendingDonationAction = false; // Memoria inteligente para recordar si el usuario quería donar
+        let pendingDonationAction = false; 
         
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyrowaQ5ioMtRyU1qM3pCzAsqa1HeY1YA2d0ZC2bwUcrk8SiyPRVV9eJf4B3wCOngX1/exec';
 
@@ -487,7 +487,6 @@
             btn.innerHTML = `⏳ Descargando base de datos...`;
             btn.disabled = true;
 
-            // Llama a la función real para traer los datos de Google Sheets
             await loadPicks();
 
             btn.innerHTML = originalHTML;
@@ -507,7 +506,6 @@
                 closeModal('auth-modal'); 
                 updateUserInterface(); 
                 
-                // Si el usuario intentaba donar antes de loguearse, abrimos la ventana de donación automáticamente
                 if (pendingDonationAction) {
                     pendingDonationAction = false;
                     setTimeout(() => { openModal('payment-modal'); }, 400);
@@ -541,7 +539,6 @@
                 closeModal('auth-modal'); 
                 updateUserInterface(); 
                 
-                // Si el usuario intentaba donar antes de registrarse
                 if (pendingDonationAction) {
                     pendingDonationAction = false;
                     setTimeout(() => { openModal('payment-modal'); }, 400);
@@ -553,7 +550,7 @@
 
         function prepareDonation() {
             if (!currentUser) {
-                pendingDonationAction = true; // Memoria activada: recuerda que el usuario quiere donar
+                pendingDonationAction = true; 
                 openModal('auth-modal');
                 showInlineMsg('login-msg', "Por favor, inicia sesión o regístrate en la comunidad para poder registrar tu donación.", false);
                 showInlineMsg('reg-msg', "Por favor, inicia sesión o regístrate en la comunidad para poder registrar tu donación.", false);
@@ -570,12 +567,13 @@
             btn.innerHTML = "Redirigiendo a Mercado Pago..."; 
             btn.disabled = true;
             
+            const amount = document.getElementById('pay-amount').value;
             const mercadoPagoLink = "https://link.mercadopago.com.mx/pickpro"; 
             
             setTimeout(async () => {
                 window.open(mercadoPagoLink, '_blank');
                 
-                const res = await fetchAPI({ action: 'subscribe', email: currentUser.email });
+                const res = await fetchAPI({ action: 'donate', email: currentUser.email, amount: amount });
                 
                 btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Ir a Mercado Pago`; 
                 btn.disabled = false;
@@ -584,7 +582,9 @@
                     currentUser.isVIP = true; 
                     updateUserInterface();
                     closeModal('payment-modal');
-                    showSimulatedEmail(`✅ Te hemos redirigido a Mercado Pago. Al completar tu aporte, el sistema registrará tu estatus como Donador Estrella. ¡Gracias por apoyar la ciencia de datos!`); 
+                    showSimulatedEmail(`✅ Te hemos redirigido a Mercado Pago. Al completar tu aporte de $${amount} MXN, el sistema confirmará tu estatus como Donador Estrella. ¡Gracias!`); 
+                } else {
+                    showInlineMsg('payment-msg', "Error al procesar: " + res.message, false); 
                 }
             }, 1200);
         }
@@ -688,31 +688,25 @@
             
             const sportIcons = { "Fútbol": "⚽", "Baloncesto": "🏀", "Tenis": "🎾", "Béisbol": "⚾", "Fórmula 1": "🏎️", "Boxeo": "🥊", "eSports": "🎮" };
 
-            // Calcular estadísticas y filtrar picks de los últimos 7 días
             picksData.forEach((pick) => {
-                // Sumar estadisticas globales
                 if (pick.Resultado === 'Acertado') totalWin++;
                 if (pick.Resultado === 'Fallado') totalLose++;
 
-                // Calcular antigüedad
                 let pickDate = new Date(pick.Fecha);
                 let diffTime = now - pickDate;
                 let diffDays = diffTime / (1000 * 60 * 60 * 24);
 
-                // Guardar si es un partido futuro o si tiene menos de 7 días de viejo
                 if (diffDays <= 7 || isNaN(diffDays)) {
                     recentPicks.push(pick);
                 }
             });
 
-            // Actualizar Marcadores en pantalla
             document.getElementById('count-win').innerText = totalWin;
             document.getElementById('count-lose').innerText = totalLose;
             let totalResolved = totalWin + totalLose;
             let rate = totalResolved > 0 ? Math.round((totalWin / totalResolved) * 100) : 0;
             document.getElementById('count-rate').innerText = rate + '%';
 
-            // Mostrar solo los recientes en la tabla
             if (recentPicks.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 2rem;">No hay pronósticos recientes en los últimos 7 días.</td></tr>`; 
                 return;
@@ -735,7 +729,6 @@
             });
         }
 
-        // TEXTOS LEGALES EXTENSOS Y ROBUSTOS
         const legalTexts = {
             terms: `
                 <h2>Términos y Condiciones de Uso</h2>
