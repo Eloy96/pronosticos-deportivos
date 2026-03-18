@@ -83,6 +83,18 @@
         .status-win { color: var(--primary); font-weight: 600; }
         .status-lose { color: #ff3b30; font-weight: 600; }
         .status-pending { color: #facc15; font-weight: 600; }
+
+        /* Marcadores Estadísticos */
+        .stats-container { display: flex; gap: 1rem; margin-bottom: 2rem; justify-content: center; flex-wrap: wrap; }
+        .stat-box { background: var(--card-bg); border: 1px solid var(--card-border); padding: 1.5rem; border-radius: 12px; text-align: center; min-width: 140px; flex: 1; max-width: 200px;}
+        .stat-box.win { border-color: rgba(0, 230, 118, 0.3); box-shadow: 0 4px 15px rgba(0, 230, 118, 0.05); }
+        .stat-box.win .stat-value { color: var(--primary); }
+        .stat-box.lose { border-color: rgba(255, 59, 48, 0.3); box-shadow: 0 4px 15px rgba(255, 59, 48, 0.05); }
+        .stat-box.lose .stat-value { color: var(--danger); }
+        .stat-box.yield { border-color: rgba(0, 158, 227, 0.3); box-shadow: 0 4px 15px rgba(0, 158, 227, 0.05); }
+        .stat-box.yield .stat-value { color: var(--mp-blue); }
+        .stat-label { display: block; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: bold; margin-bottom: 0.5rem; letter-spacing: 0.5px;}
+        .stat-value { display: block; font-size: 2.2rem; font-weight: 800; line-height: 1; }
         
         /* Footer Legal */
         footer { background-color: #0b0f19; border-top: 1px solid var(--card-border); padding: 3rem 1rem 1rem; margin-top: auto; text-align: center; }
@@ -136,7 +148,8 @@
             <a href="#historial" class="nav-links" style="color: var(--text-main); text-decoration: none;">Historial Público</a>
             
             <div id="auth-area" style="display: flex; align-items: center; gap: 15px;">
-                <button class="auth-toggle" onclick="openModal('auth-modal')">Ingresar / Registro</button>
+                <!-- Añadí la variable pendingDonationAction=false para limpiar intenciones pasadas -->
+                <button class="auth-toggle" onclick="pendingDonationAction = false; openModal('auth-modal')">Ingresar / Registro</button>
             </div>
         </div>
     </nav>
@@ -150,12 +163,28 @@
         <section id="historial" class="history-section">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                 <h2 class="section-title" style="margin-bottom: 0;">Picks de la Jornada</h2>
-                <button onclick="checkLiveResults()" class="cta-button" style="width: auto; padding: 0.5rem 1rem; font-size: 0.8rem; display: flex; align-items: center; gap: 5px; background: transparent; color: var(--text-muted); border-color: var(--card-border);">
+                <button onclick="checkLiveResults(event)" class="cta-button" style="width: auto; padding: 0.5rem 1rem; font-size: 0.8rem; display: flex; align-items: center; gap: 5px; background: transparent; color: var(--text-muted); border-color: var(--card-border);">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.59-9.27l5.67-5.67"/></svg>
-                    Sincronizar Resultados
+                    Actualizar Datos
                 </button>
             </div>
             
+            <!-- Marcadores Globales -->
+            <div class="stats-container">
+                <div class="stat-box win">
+                    <span class="stat-label">Acertados</span>
+                    <span class="stat-value" id="count-win">-</span>
+                </div>
+                <div class="stat-box lose">
+                    <span class="stat-label">Fallados</span>
+                    <span class="stat-value" id="count-lose">-</span>
+                </div>
+                <div class="stat-box yield">
+                    <span class="stat-label">% Acierto</span>
+                    <span class="stat-value" id="count-rate">-%</span>
+                </div>
+            </div>
+
             <div class="table-container">
                 <table>
                     <thead>
@@ -363,6 +392,7 @@
         // --- ESTADO GLOBAL E INTEGRACIÓN BACKEND ---
         let currentUser = null; 
         let picksData = [];
+        let pendingDonationAction = false; // Memoria inteligente para recordar si el usuario quería donar
         
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyrowaQ5ioMtRyU1qM3pCzAsqa1HeY1YA2d0ZC2bwUcrk8SiyPRVV9eJf4B3wCOngX1/exec';
 
@@ -422,14 +452,13 @@
                     <button onclick="logout()" class="nav-btn-danger">Salir</button>
                 `;
                 
-                // LÓGICA CORREGIDA: El botón de donar ahora SIEMPRE está habilitado.
                 if (btnNovato) {
                     btnNovato.textContent = currentUser.isVIP ? "Hacer Nueva Donación 💚" : "Apoyar Proyecto y Ser Estrella";
                     btnNovato.disabled = false;
                     btnNovato.style.opacity = '1';
                 }
             } else {
-                authArea.innerHTML = `<button class="auth-toggle" onclick="openModal('auth-modal')">Ingresar / Registro</button>`;
+                authArea.innerHTML = `<button class="auth-toggle" onclick="pendingDonationAction=false; openModal('auth-modal')">Ingresar / Registro</button>`;
                 if (btnNovato) {
                     btnNovato.textContent = "Hacer una Donación";
                     btnNovato.disabled = false;
@@ -452,17 +481,18 @@
             }
         }
 
-        function checkLiveResults() {
+        async function checkLiveResults(event) {
             const btn = event.currentTarget;
             const originalHTML = btn.innerHTML;
-            btn.innerHTML = `⏳ Sincronizando modelo...`;
+            btn.innerHTML = `⏳ Descargando base de datos...`;
             btn.disabled = true;
 
-            setTimeout(() => {
-                showSimulatedEmail("En un entorno de producción, este botón conectará con la API para automatizar el cruce de resultados con tus modelos matemáticos en Google Sheets.");
-                btn.innerHTML = originalHTML;
-                btn.disabled = false;
-            }, 2500);
+            // Llama a la función real para traer los datos de Google Sheets
+            await loadPicks();
+
+            btn.innerHTML = originalHTML;
+            btn.disabled = false;
+            showSimulatedEmail("✅ Tabla y estadísticas actualizadas correctamente con tu base de datos.");
         }
 
         async function handleLogin(e) {
@@ -476,6 +506,12 @@
                 currentUser = res; 
                 closeModal('auth-modal'); 
                 updateUserInterface(); 
+                
+                // Si el usuario intentaba donar antes de loguearse, abrimos la ventana de donación automáticamente
+                if (pendingDonationAction) {
+                    pendingDonationAction = false;
+                    setTimeout(() => { openModal('payment-modal'); }, 400);
+                }
             } else { showInlineMsg('login-msg', res.message, false); }
         }
 
@@ -483,7 +519,6 @@
             e.preventDefault();
             hideInlineMsgs();
             
-            // Validación estricta de edad desde Javascript
             const age = document.getElementById('reg-age').value;
             if (parseInt(age) < 18) {
                 showInlineMsg('reg-msg', "Acceso denegado: Es estrictamente obligatorio ser mayor de 18 años para registrarse.", false);
@@ -505,14 +540,23 @@
                 currentUser = res; 
                 closeModal('auth-modal'); 
                 updateUserInterface(); 
-                showSimulatedEmail("¡Bienvenido a la comunidad analítica! Todos los pronósticos están abiertos para ti.");
+                
+                // Si el usuario intentaba donar antes de registrarse
+                if (pendingDonationAction) {
+                    pendingDonationAction = false;
+                    setTimeout(() => { openModal('payment-modal'); }, 400);
+                } else {
+                    showSimulatedEmail("¡Bienvenido a la comunidad analítica! Todos los pronósticos están abiertos para ti.");
+                }
             } else { showInlineMsg('reg-msg', res.message, false); }
         }
 
         function prepareDonation() {
             if (!currentUser) {
+                pendingDonationAction = true; // Memoria activada: recuerda que el usuario quiere donar
                 openModal('auth-modal');
-                showInlineMsg('login-msg', "Inicia sesión o regístrate en la comunidad para poder registrar tu donación a tu nombre.", false);
+                showInlineMsg('login-msg', "Por favor, inicia sesión o regístrate en la comunidad para poder registrar tu donación.", false);
+                showInlineMsg('reg-msg', "Por favor, inicia sesión o regístrate en la comunidad para poder registrar tu donación.", false);
                 return;
             }
             openModal('payment-modal');
@@ -529,7 +573,6 @@
             const mercadoPagoLink = "https://link.mercadopago.com.mx/pickpro"; 
             
             setTimeout(async () => {
-                // Abre tu link en una pestaña nueva
                 window.open(mercadoPagoLink, '_blank');
                 
                 const res = await fetchAPI({ action: 'subscribe', email: currentUser.email });
@@ -627,12 +670,55 @@
         }
 
         function renderTable() {
-            const tbody = document.getElementById('picks-body'); tbody.innerHTML = ''; 
-            if (picksData.length === 0) { tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 2rem;">No hay picks disponibles.</td></tr>`; return; }
+            const tbody = document.getElementById('picks-body'); 
+            tbody.innerHTML = ''; 
+            
+            let totalWin = 0;
+            let totalLose = 0;
+            let recentPicks = [];
+            const now = new Date();
+            
+            if (picksData.length === 0) { 
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 2rem;">No hay picks disponibles.</td></tr>`; 
+                document.getElementById('count-win').innerText = "0";
+                document.getElementById('count-lose').innerText = "0";
+                document.getElementById('count-rate').innerText = "0%";
+                return; 
+            }
             
             const sportIcons = { "Fútbol": "⚽", "Baloncesto": "🏀", "Tenis": "🎾", "Béisbol": "⚾", "Fórmula 1": "🏎️", "Boxeo": "🥊", "eSports": "🎮" };
 
+            // Calcular estadísticas y filtrar picks de los últimos 7 días
             picksData.forEach((pick) => {
+                // Sumar estadisticas globales
+                if (pick.Resultado === 'Acertado') totalWin++;
+                if (pick.Resultado === 'Fallado') totalLose++;
+
+                // Calcular antigüedad
+                let pickDate = new Date(pick.Fecha);
+                let diffTime = now - pickDate;
+                let diffDays = diffTime / (1000 * 60 * 60 * 24);
+
+                // Guardar si es un partido futuro o si tiene menos de 7 días de viejo
+                if (diffDays <= 7 || isNaN(diffDays)) {
+                    recentPicks.push(pick);
+                }
+            });
+
+            // Actualizar Marcadores en pantalla
+            document.getElementById('count-win').innerText = totalWin;
+            document.getElementById('count-lose').innerText = totalLose;
+            let totalResolved = totalWin + totalLose;
+            let rate = totalResolved > 0 ? Math.round((totalWin / totalResolved) * 100) : 0;
+            document.getElementById('count-rate').innerText = rate + '%';
+
+            // Mostrar solo los recientes en la tabla
+            if (recentPicks.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 2rem;">No hay pronósticos recientes en los últimos 7 días.</td></tr>`; 
+                return;
+            }
+
+            recentPicks.forEach((pick) => {
                 let statusClass = pick.Resultado === 'Acertado' ? 'status-win' : pick.Resultado === 'Fallado' ? 'status-lose' : 'status-pending';
                 
                 let fechaLimpia = pick.Fecha;
@@ -659,13 +745,16 @@
                 <p>PickPro Analytics es una plataforma estrictamente orientada al análisis estadístico, ciencia de datos y modelado predictivo de eventos deportivos. <strong>BAJO NINGUNA CIRCUNSTANCIA PickPro Analytics opera como una casa de apuestas, casino, entidad financiera o intermediario de juegos de azar.</strong> No captamos, procesamos, ni custodiamos dinero destinado a la colocación de apuestas, ni pagamos premios.</p>
                 <p>Toda la información provista tiene un fin <strong>únicamente educativo, analítico y de entretenimiento</strong>. Los pronósticos (picks) compartidos son el resultado de modelos matemáticos y <strong>NO constituyen asesoría financiera ni garantizan ningún resultado favorable o retorno de inversión</strong>. El usuario reconoce y acepta que las apuestas deportivas conllevan un altísimo riesgo de pérdida de capital y asume el 100% de la responsabilidad por sus decisiones financieras ante terceros.</p>
                 
-                <h3>2. Restricción Estricta de Edad (+18) y Falsedad de Declaraciones</h3>
+                <h3>2. Desempeño Histórico</h3>
+                <p>Los marcadores estadísticos (como "Acertados", "Fallados" o "% de Acierto") reflejan el desempeño pasado del modelo analítico de PickPro Analytics. <strong>El rendimiento histórico no es indicativo, promesa ni garantía de resultados futuros.</strong> Las cuotas y probabilidades pueden fluctuar en cualquier momento.</p>
+
+                <h3>3. Restricción Estricta de Edad (+18) y Falsedad de Declaraciones</h3>
                 <p>El uso de esta plataforma, así como el registro en la misma, está <strong>estrictamente prohibido para personas menores de 18 años</strong> (o la mayoría de edad legal aplicable en la jurisdicción del usuario). Al marcar la casilla de aceptación durante el registro, el usuario declara bajo protesta de decir verdad que cumple con este requisito. Cualquier falsedad en esta declaración exime a PickPro Analytics de toda responsabilidad legal, civil o penal, recayendo ésta íntegramente sobre el usuario o sus tutores legales.</p>
                 
-                <h3>3. Donaciones Voluntarias y Política de Cero Reembolsos</h3>
+                <h3>4. Donaciones Voluntarias y Política de Cero Reembolsos</h3>
                 <p>El acceso a la información de PickPro Analytics es público. Los pagos realizados a través de Mercado Pago u otras pasarelas se consideran <strong>donaciones voluntarias, unilaterales e irrevocables</strong> destinadas a apoyar el mantenimiento de servidores, bases de datos y el tiempo dedicado a la ciencia de datos. Dado que no se está adquiriendo un producto con garantía de éxito financiero, <strong>no existen devoluciones, disputas (chargebacks) ni reembolsos bajo ninguna circunstancia</strong>.</p>
                 
-                <h3>4. Propiedad Intelectual</h3>
+                <h3>5. Propiedad Intelectual</h3>
                 <p>Los modelos, análisis y textos son propiedad intelectual de PickPro Analytics. Queda estrictamente prohibida la reproducción, reventa, o distribución masiva de nuestro contenido sin autorización previa.</p>
             `,
             privacy: `
