@@ -422,14 +422,11 @@
                     <button onclick="logout()" class="nav-btn-danger">Salir</button>
                 `;
                 
-                if (btnNovato && !currentUser.isVIP) {
-                    btnNovato.textContent = "Apoyar Proyecto y Ser Estrella";
+                // LÓGICA CORREGIDA: El botón de donar ahora SIEMPRE está habilitado.
+                if (btnNovato) {
+                    btnNovato.textContent = currentUser.isVIP ? "Hacer Nueva Donación 💚" : "Apoyar Proyecto y Ser Estrella";
                     btnNovato.disabled = false;
                     btnNovato.style.opacity = '1';
-                } else if (btnNovato && currentUser.isVIP) {
-                    btnNovato.textContent = "¡Gracias por tu apoyo!";
-                    btnNovato.disabled = true;
-                    btnNovato.style.opacity = '0.5';
                 }
             } else {
                 authArea.innerHTML = `<button class="auth-toggle" onclick="openModal('auth-modal')">Ingresar / Registro</button>`;
@@ -486,7 +483,7 @@
             e.preventDefault();
             hideInlineMsgs();
             
-            // Validación estricta de edad desde Javascript (evita manipulaciones en el HTML)
+            // Validación estricta de edad desde Javascript
             const age = document.getElementById('reg-age').value;
             if (parseInt(age) < 18) {
                 showInlineMsg('reg-msg', "Acceso denegado: Es estrictamente obligatorio ser mayor de 18 años para registrarse.", false);
