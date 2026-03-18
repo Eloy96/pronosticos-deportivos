@@ -203,7 +203,7 @@
                 <span style="color: var(--text-muted); font-size: 0.9rem;">Juega con responsabilidad.</span>
             </div>
             <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 1.5rem; line-height: 1.5;">
-                <strong>Aviso Legal:</strong> PickPro ofrece servicios de análisis estadístico e información deportiva. <strong>No somos una casa de apuestas ni casino</strong> y no captamos fondos para juegos de azar. Los pronósticos compartidos no garantizan ganancias financieras. El dinero ingresado a la plataforma es estrictamente en calidad de donación voluntaria para el mantenimiento del proyecto de ciencia de datos. Las apuestas deportivas conllevan un alto riesgo y el usuario es el único responsable de sus decisiones.
+                <strong>Aviso Legal y Restricción de Edad:</strong> PickPro Analytics ofrece servicios de análisis estadístico e información deportiva. <strong>No somos una casa de apuestas ni casino</strong> y no captamos fondos para juegos de azar. Los pronósticos compartidos no garantizan ganancias financieras. Las aportaciones recibidas son exclusivamente donaciones voluntarias irrevocables para el mantenimiento tecnológico del proyecto. El acceso y uso de esta plataforma está estrictamente prohibido para menores de 18 años. El usuario asume el 100% de la responsabilidad legal y financiera por sus decisiones y por la veracidad de los datos proporcionados al registrarse.
             </p>
             <div class="footer-links">
                 <a onclick="openLegalModal('terms', event)">Términos y Condiciones</a>
@@ -238,7 +238,7 @@
 
             <form id="form-register" onsubmit="handleRegister(event)" style="display: none;">
                 <input type="text" id="reg-name" placeholder="Nombre completo" required>
-                <input type="number" id="reg-age" placeholder="Edad (Min. 18)" min="18" required>
+                <input type="number" id="reg-age" placeholder="Edad (Obligatorio +18)" min="18" required>
                 <input type="text" id="reg-username" placeholder="Nombre de usuario" required>
                 <input type="email" id="reg-email" placeholder="Correo electrónico" required>
                 <input type="password" id="reg-pass" placeholder="Crea una contraseña" required>
@@ -486,9 +486,10 @@
             e.preventDefault();
             hideInlineMsgs();
             
+            // Validación estricta de edad desde Javascript (evita manipulaciones en el HTML)
             const age = document.getElementById('reg-age').value;
             if (parseInt(age) < 18) {
-                showInlineMsg('reg-msg', "Acceso denegado: Debes ser estrictamente mayor de 18 años para registrarte.", false);
+                showInlineMsg('reg-msg', "Acceso denegado: Es estrictamente obligatorio ser mayor de 18 años para registrarse.", false);
                 return;
             }
 
@@ -534,15 +535,13 @@
                 // Abre tu link en una pestaña nueva
                 window.open(mercadoPagoLink, '_blank');
                 
-                // NOTA TÉCNICA: Eliminamos la simulación que daba el estatus "VIP/Donador Estrella" gratis.
-                // En su lugar, el sistema hace el upgrade y notifica que se registró la intención.
                 const res = await fetchAPI({ action: 'subscribe', email: currentUser.email });
                 
                 btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Ir a Mercado Pago`; 
                 btn.disabled = false;
                 
                 if (res.success) {
-                    currentUser.isVIP = true; // Ahora es un Donador Estrella en UI
+                    currentUser.isVIP = true; 
                     updateUserInterface();
                     closeModal('payment-modal');
                     showSimulatedEmail(`✅ Te hemos redirigido a Mercado Pago. Al completar tu aporte, el sistema registrará tu estatus como Donador Estrella. ¡Gracias por apoyar la ciencia de datos!`); 
@@ -630,7 +629,6 @@
             } else { showInlineMsg('delete-msg', res.message, false); }
         }
 
-        // --- RENDERIZADO DE TABLA (TODO VISIBLE) ---
         function renderTable() {
             const tbody = document.getElementById('picks-body'); tbody.innerHTML = ''; 
             if (picksData.length === 0) { tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 2rem;">No hay picks disponibles.</td></tr>`; return; }
@@ -645,7 +643,6 @@
                     fechaLimpia = new Date(fechaLimpia).toLocaleDateString('es-MX', {timeZone: 'UTC'});
                 }
 
-                // AHORA TODOS LOS PRONÓSTICOS SON VISIBLES PARA CUALQUIERA
                 let pronosticoHTML = pick.Pronostico;
                 let casaHTML = pick.CasaDeApuesta;
                 let cuotaHTML = pick.Cuota;
@@ -655,32 +652,44 @@
             });
         }
 
+        // TEXTOS LEGALES EXTENSOS Y ROBUSTOS
         const legalTexts = {
             terms: `
                 <h2>Términos y Condiciones de Uso</h2>
                 <p><strong>Última actualización: Marzo 2026</strong></p>
-                <h3>1. Objeto y Naturaleza del Servicio</h3>
-                <p>PickPro Analytics es una plataforma de análisis estadístico y compartición de modelos predictivos deportivos de código abierto. <strong>NO somos una casa de apuestas.</strong> No captamos dinero destinado a juegos de azar ni pagamos premios.</p>
-                <h3>2. Aceptación y Donaciones</h3>
-                <p>Nuestra información es 100% gratuita y pública. Sin embargo, aceptamos <strong>aportaciones y donaciones voluntarias</strong> de los miembros de la comunidad para costear infraestructura tecnológica, servidores y bases de datos. Al donar, usted entiende que no está comprando un producto restrictivo, sino apoyando un proyecto abierto.</p>
-                <h3>3. Exclusión de Riesgo</h3>
-                <p>Las apuestas conllevan un riesgo de pérdida de capital. Los pronósticos se basan en opiniones estadísticas y <strong>en ningún caso garantizan resultados favorables</strong>. El usuario asume el 100% del riesgo financiero.</p>
-                <h3>4. Requisito de Edad (+18)</h3>
-                <p>El uso de este servicio está estrictamente prohibido para personas menores de 18 años.</p>
-                <h3>5. Política de No Reembolso</h3>
-                <p>Dado que los fondos son aportes voluntarios y donaciones destinadas al mantenimiento del proyecto abierto, <strong>no existen devoluciones ni reembolsos</strong>.</p>
+                
+                <h3>1. Naturaleza del Servicio y Exención de Responsabilidad Legal</h3>
+                <p>PickPro Analytics es una plataforma estrictamente orientada al análisis estadístico, ciencia de datos y modelado predictivo de eventos deportivos. <strong>BAJO NINGUNA CIRCUNSTANCIA PickPro Analytics opera como una casa de apuestas, casino, entidad financiera o intermediario de juegos de azar.</strong> No captamos, procesamos, ni custodiamos dinero destinado a la colocación de apuestas, ni pagamos premios.</p>
+                <p>Toda la información provista tiene un fin <strong>únicamente educativo, analítico y de entretenimiento</strong>. Los pronósticos (picks) compartidos son el resultado de modelos matemáticos y <strong>NO constituyen asesoría financiera ni garantizan ningún resultado favorable o retorno de inversión</strong>. El usuario reconoce y acepta que las apuestas deportivas conllevan un altísimo riesgo de pérdida de capital y asume el 100% de la responsabilidad por sus decisiones financieras ante terceros.</p>
+                
+                <h3>2. Restricción Estricta de Edad (+18) y Falsedad de Declaraciones</h3>
+                <p>El uso de esta plataforma, así como el registro en la misma, está <strong>estrictamente prohibido para personas menores de 18 años</strong> (o la mayoría de edad legal aplicable en la jurisdicción del usuario). Al marcar la casilla de aceptación durante el registro, el usuario declara bajo protesta de decir verdad que cumple con este requisito. Cualquier falsedad en esta declaración exime a PickPro Analytics de toda responsabilidad legal, civil o penal, recayendo ésta íntegramente sobre el usuario o sus tutores legales.</p>
+                
+                <h3>3. Donaciones Voluntarias y Política de Cero Reembolsos</h3>
+                <p>El acceso a la información de PickPro Analytics es público. Los pagos realizados a través de Mercado Pago u otras pasarelas se consideran <strong>donaciones voluntarias, unilaterales e irrevocables</strong> destinadas a apoyar el mantenimiento de servidores, bases de datos y el tiempo dedicado a la ciencia de datos. Dado que no se está adquiriendo un producto con garantía de éxito financiero, <strong>no existen devoluciones, disputas (chargebacks) ni reembolsos bajo ninguna circunstancia</strong>.</p>
+                
+                <h3>4. Propiedad Intelectual</h3>
+                <p>Los modelos, análisis y textos son propiedad intelectual de PickPro Analytics. Queda estrictamente prohibida la reproducción, reventa, o distribución masiva de nuestro contenido sin autorización previa.</p>
             `,
             privacy: `
                 <h2>Aviso de Privacidad Integral</h2>
                 <p><strong>Última actualización: Marzo 2026</strong></p>
-                <h3>1. Identidad y Domicilio</h3>
-                <p>PickPro Analytics, en cumplimiento a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP), es el responsable del tratamiento y salvaguarda de sus datos personales.</p>
+                
+                <h3>1. Identidad y Domicilio del Responsable</h3>
+                <p>PickPro Analytics, en estricto cumplimiento a la <strong>Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP)</strong>, su Reglamento y normatividad aplicable en los Estados Unidos Mexicanos, actúa como responsable del tratamiento, uso y salvaguarda de sus datos personales.</p>
+                
                 <h3>2. Datos Personales Recabados</h3>
-                <p>Recabamos: Nombre, Edad, Correo Electrónico y Nombre de Usuario. <strong>Datos Sensibles:</strong> NO almacenamos información bancaria completa. Las donaciones son procesadas por pasarelas externas seguras (Mercado Pago).</p>
-                <h3>3. Transferencia de Datos</h3>
-                <p><strong>NO vendemos, ni comercializamos</strong> sus datos personales con ninguna entidad externa.</p>
-                <h3>4. Ejercicio de Derechos ARCO</h3>
-                <p>Usted puede ejercer sus derechos ARCO directamente desde la sección "Mi Perfil" eliminando su cuenta permanentemente o contactando a nuestro soporte.</p>
+                <p>Para la correcta operación de la comunidad, recabamos los siguientes datos de forma directa: Nombre completo, Edad (para validación estricta de mayoría de edad), Correo Electrónico y Nombre de Usuario. <br><br><strong>Aviso sobre Datos Sensibles y Financieros:</strong> PickPro Analytics NO recaba, almacena ni procesa datos financieros (números de tarjeta, CVV, cuentas bancarias). Toda donación es procesada a través de la pasarela de pagos segura e independiente "Mercado Pago", la cual opera bajo sus propios estándares de seguridad (PCI DSS).</p>
+                
+                <h3>3. Finalidades del Tratamiento</h3>
+                <p><strong>Finalidades Primarias:</strong> a) Creación y gestión de su cuenta de usuario en la plataforma; b) Verificación estricta del requisito de mayoría de edad (+18); c) Control de accesos y estatus de "Donador Estrella"; d) Envío de correos de seguridad (como códigos de recuperación de contraseña).<br>
+                <strong>Finalidades Secundarias:</strong> e) Análisis estadístico interno para mejorar la plataforma; f) Envío ocasional de boletines o actualizaciones del modelo predictivo.</p>
+                
+                <h3>4. Transferencia de Datos</h3>
+                <p>Le informamos que PickPro Analytics <strong>NO realiza transferencias, ventas, ni alquiler de sus datos personales a terceros</strong>, agencias de publicidad o entidades ajenas a nuestra operación, salvo requerimiento por mandato de autoridad judicial competente.</p>
+                
+                <h3>5. Ejercicio de Derechos ARCO (Acceso, Rectificación, Cancelación y Oposición)</h3>
+                <p>Usted tiene el derecho inalienable de conocer qué datos tenemos, rectificarlos si son inexactos, cancelar su cuenta y eliminar sus datos de nuestros servidores, u oponerse a su uso. Este derecho puede ejercerlo de manera autónoma, instantánea y definitiva ingresando a la sección "Mi Perfil" dentro de la plataforma y seleccionando "Eliminar mi cuenta".</p>
             `
         };
 
