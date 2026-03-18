@@ -149,7 +149,6 @@
             <p>Accede a pronósticos deportivos con +68% de acierto mensual. Alimentado en tiempo real por nuestra base de datos en vivo.</p>
         </section>
 
-        <!-- Historial / Picks -->
         <section id="historial" class="history-section">
             <h2 class="section-title">Nuestros Últimos Picks</h2>
             <div class="table-container">
@@ -171,7 +170,6 @@
             </div>
         </section>
 
-        <!-- Planes -->
         <section id="planes" class="pricing-section">
             <article class="pricing-card">
                 <h2 class="tier-name">Novato</h2>
@@ -181,7 +179,7 @@
                     <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Estadísticas básicas</li>
                     <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Acceso al canal público</li>
                 </ul>
-                <button class="cta-button" onclick="openModal('auth-modal'); switchTab('register')">Crear Cuenta Gratis</button>
+                <button id="btn-novato" class="cta-button" onclick="openModal('auth-modal'); switchTab('register')">Crear Cuenta Gratis</button>
             </article>
 
             <article class="pricing-card popular">
@@ -210,7 +208,6 @@
         </section>
     </main>
 
-    <!-- Footer Legal -->
     <footer>
         <div class="footer-content">
             <div style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
@@ -228,7 +225,6 @@
         </div>
     </footer>
 
-    <!-- Modal Autenticación -->
     <div id="auth-modal" class="modal-overlay">
         <div class="auth-panel">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
@@ -241,7 +237,6 @@
                 <button class="auth-tab" id="tab-register" onclick="switchTab('register')">Registrarse</button>
             </div>
 
-            <!-- Login Form -->
             <form id="form-login" onsubmit="handleLogin(event)">
                 <input type="email" id="login-email" placeholder="Tu correo electrónico" required>
                 <input type="password" id="login-pass" placeholder="Tu contraseña" required>
@@ -252,7 +247,6 @@
                 </p>
             </form>
 
-            <!-- Register Form -->
             <form id="form-register" onsubmit="handleRegister(event)" style="display: none;">
                 <input type="text" id="reg-name" placeholder="Nombre completo" required>
                 <input type="number" id="reg-age" placeholder="Edad (Min. 18)" min="18" required>
@@ -276,7 +270,6 @@
         </div>
     </div>
 
-    <!-- Modal Pago Seguro -->
     <div id="payment-modal" class="modal-overlay">
         <div class="modal-content" style="max-width: 400px;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem;">
@@ -302,7 +295,6 @@
         </div>
     </div>
 
-    <!-- Modal Recuperar Contraseña -->
     <div id="forgot-modal" class="modal-overlay">
         <div class="modal-content">
             <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem;">
@@ -326,7 +318,6 @@
         </div>
     </div>
 
-    <!-- Modal Mi Perfil -->
     <div id="profile-modal" class="modal-overlay">
         <div class="modal-content" style="max-width: 600px;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
@@ -359,7 +350,6 @@
         </div>
     </div>
 
-    <!-- Modal Textos Legales -->
     <div id="legal-modal" class="modal-overlay" style="z-index: 2500;">
         <div class="legal-modal-content">
             <button onclick="closeModal('legal-modal')" style="position: absolute; top: 1.5rem; right: 1.5rem; background: rgba(255,255,255,0.1); border: none; color: white; width: 30px; height: 30px; border-radius: 50%; font-size: 1.2rem; cursor: pointer;">&times;</button>
@@ -367,7 +357,6 @@
         </div>
     </div>
 
-    <!-- Notificación Flotante (Toast) -->
     <div id="email-toast" style="position: fixed; bottom: 20px; right: 20px; background: #1e293b; border-left: 4px solid var(--primary); padding: 1rem; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); display: none; z-index: 3000; max-width: 320px;">
         <p style="margin: 0; font-size: 0.85rem; color: #94a3b8;">🔔 <strong>Notificación</strong></p>
         <p id="email-toast-msg" style="margin: 0.8rem 0; font-size: 0.9rem; line-height: 1.4;"></p>
@@ -380,7 +369,6 @@
         let picksData = [];
         let selectedPlan = '';
         
-        // El enlace de tu Servidor en Apps Script
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyrowaQ5ioMtRyU1qM3pCzAsqa1HeY1YA2d0ZC2bwUcrk8SiyPRVV9eJf4B3wCOngX1/exec';
 
         async function fetchAPI(params) {
@@ -428,6 +416,8 @@
         // --- SISTEMA DE SESIÓN (UI) ---
         function updateUserInterface() {
             const authArea = document.getElementById('auth-area');
+            const btnNovato = document.getElementById('btn-novato');
+
             if (currentUser) {
                 authArea.innerHTML = `
                     <div style="text-align: right; line-height: 1.2;">
@@ -439,8 +429,18 @@
                     <button onclick="populateProfileModal(); openModal('profile-modal')" class="auth-toggle">Mi Perfil</button>
                     <button onclick="logout()" class="nav-btn-danger">Salir</button>
                 `;
+                if (btnNovato) {
+                    btnNovato.textContent = "Plan Actual";
+                    btnNovato.disabled = true;
+                    btnNovato.style.opacity = '0.5';
+                }
             } else {
                 authArea.innerHTML = `<button class="auth-toggle" onclick="openModal('auth-modal')">Ingresar / Registro</button>`;
+                if (btnNovato) {
+                    btnNovato.textContent = "Crear Cuenta Gratis";
+                    btnNovato.disabled = false;
+                    btnNovato.style.opacity = '1';
+                }
             }
             renderTable();
         }
@@ -497,7 +497,7 @@
             } else { showInlineMsg('reg-msg', res.message, false); }
         }
 
-        // --- PAGO SEGURO (FORMULARIO Y ACTIVACIÓN) ---
+        // --- PAGO SEGURO ---
         function preparePayment(plan) {
             if (!currentUser) {
                 openModal('auth-modal');
@@ -517,7 +517,6 @@
             btn.textContent = "Procesando con el banco..."; 
             btn.disabled = true;
             
-            // Simulamos el retraso natural de una pasarela de pago como Stripe/Visa
             setTimeout(async () => {
                 const res = await fetchAPI({ action: 'subscribe', email: currentUser.email });
                 btn.textContent = "Procesar Pago y Activar VIP"; 
@@ -616,80 +615,79 @@
             } else { showInlineMsg('delete-msg', res.message, false); }
         }
 
-        // --- RENDERIZADO DE TABLA ---
+        // --- RENDERIZADO DE TABLA Y FECHAS ---
         function renderTable() {
             const tbody = document.getElementById('picks-body'); tbody.innerHTML = ''; 
             if (picksData.length === 0) { tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 2rem;">No hay picks disponibles.</td></tr>`; return; }
             
             const sportIcons = { "Fútbol": "⚽", "Baloncesto": "🏀", "Tenis": "🎾", "Béisbol": "⚾", "Fórmula 1": "🏎️", "Boxeo": "🥊", "eSports": "🎮" };
 
-            picksData.forEach(pick => {
-                let userHasAccess = currentUser !== null && currentUser.isVIP;
+            picksData.forEach((pick, index) => {
+                let isVIP = currentUser !== null && currentUser.isVIP;
+                let isFreeUser = currentUser !== null && !currentUser.isVIP;
+                
+                let userHasAccess = isVIP || (isFreeUser && index === 0);
+                let isFreePick = isFreeUser && index === 0;
+
                 let statusClass = pick.Resultado === 'Acertado' ? 'status-win' : pick.Resultado === 'Fallado' ? 'status-lose' : 'status-pending';
                 
-                let pronosticoHTML = userHasAccess ? pick.Pronostico : `<div class="locked-cell"><span class="blurred-text">██████</span><div class="lock-icon" onclick="window.location.href='#planes'">🔒 Ver Pick</div></div>`;
+                let fechaLimpia = pick.Fecha;
+                if (fechaLimpia && fechaLimpia.includes('T')) {
+                    fechaLimpia = new Date(fechaLimpia).toLocaleDateString('es-MX', {timeZone: 'UTC'});
+                }
+
+                let badgeFree = isFreePick ? ' <span style="font-size:0.7rem; background:var(--primary); color:var(--bg-dark); padding:2px 5px; border-radius:4px; font-weight:bold; margin-left: 5px;">Pick Gratis</span>' : '';
+                let pronosticoHTML = userHasAccess ? pick.Pronostico + badgeFree : `<div class="locked-cell"><span class="blurred-text">██████</span><div class="lock-icon" onclick="window.location.href='#planes'">🔒 Ver Pick</div></div>`;
                 let casaHTML = userHasAccess ? pick.CasaDeApuesta : `<div class="locked-cell"><span class="blurred-text">██████</span></div>`;
                 let cuotaHTML = userHasAccess ? pick.Cuota : `<div class="locked-cell"><span class="blurred-text">X.XX</span></div>`;
                 let icon = sportIcons[pick.Deporte] || "🎯";
 
-                tbody.innerHTML += `<tr><td style="white-space: nowrap;">${pick.Fecha}</td><td style="color:#94a3b8;">${icon} ${pick.Deporte}</td><td>${pick.Evento}</td><td>${pronosticoHTML}</td><td style="font-weight:bold;">${casaHTML}</td><td>${cuotaHTML}</td><td class="${statusClass}">${pick.Resultado}</td></tr>`;
+                tbody.innerHTML += `<tr><td style="white-space: nowrap;">${fechaLimpia}</td><td style="color:#94a3b8;">${icon} ${pick.Deporte}</td><td>${pick.Evento}</td><td>${pronosticoHTML}</td><td style="font-weight:bold;">${casaHTML}</td><td>${cuotaHTML}</td><td class="${statusClass}">${pick.Resultado}</td></tr>`;
             });
 
-            document.getElementById('vip-message').style.display = (currentUser && currentUser.isVIP) ? 'none' : 'block';
+            if (currentUser && currentUser.isVIP) {
+                document.getElementById('vip-message').style.display = 'none';
+            } else if (currentUser && !currentUser.isVIP) {
+                document.getElementById('vip-message').style.display = 'block';
+                document.getElementById('vip-message').innerHTML = '🔒 Estás viendo tu Pick gratuito. Suscríbete para desbloquear la tabla completa.';
+            } else {
+                document.getElementById('vip-message').style.display = 'block';
+                document.getElementById('vip-message').innerHTML = '🔒 Suscríbete para desbloquear la tabla completa y procesar tu pago seguro.';
+            }
         }
 
-        // --- TEXTOS LEGALES EXTENSOS Y COMPLETOS ---
+        // --- TEXTOS LEGALES ---
         const legalTexts = {
             terms: `
                 <h2>Términos y Condiciones de Uso</h2>
                 <p><strong>Última actualización: Marzo 2026</strong></p>
-                
                 <h3>1. Objeto y Naturaleza del Servicio</h3>
                 <p>PickPro es una plataforma de análisis estadístico, información deportiva y compartición de pronósticos (picks). <strong>PickPro NO es una casa de apuestas, no somos un casino, ni facilitamos infraestructura para apostar.</strong> No captamos, procesamos ni custodiamos dinero destinado a juegos de azar ni pagamos premios de ninguna índole. Nuestra única función es la venta de información y consultoría deportiva.</p>
-                
                 <h3>2. Aceptación de los Términos</h3>
                 <p>Al acceder, registrarse o pagar una suscripción en PickPro, usted acepta expresa e incondicionalmente todos los términos descritos en este documento. Si no está de acuerdo, deberá abandonar el sitio inmediatamente.</p>
-
                 <h3>3. Exclusión de Garantías y Riesgo Financiero</h3>
                 <p>Las apuestas deportivas y el trading deportivo conllevan un riesgo sustancial de pérdida de capital. Los pronósticos, cuotas y análisis provistos en esta plataforma se basan en opiniones estadísticas e información disponible al momento, y <strong>en ningún caso garantizan resultados favorables ni retornos de inversión</strong>. El usuario reconoce que asume el 100% del riesgo financiero al realizar apuestas en casas de terceros. PickPro no se hace responsable bajo ninguna circunstancia por las pérdidas económicas directas o indirectas sufridas por los usuarios.</p>
-
                 <h3>4. Requisito Estricto de Edad (+18)</h3>
                 <p>El uso de este servicio está estrictamente prohibido para personas menores de 18 años (o la mayoría de edad en su jurisdicción). Al registrarse, usted declara bajo protesta de decir verdad que cumple con este requisito.</p>
-
                 <h3>5. Suscripciones, Pagos y Política de No Reembolso</h3>
                 <p>Los pagos realizados corresponden a la contratación de un producto digital y de acceso inmediato a propiedad intelectual. En cumplimiento con los estándares de comercio electrónico de productos digitales, <strong>no existen devoluciones, cancelaciones retroactivas ni reembolsos parciales o totales</strong> una vez que el pago ha sido procesado y el acceso a los pronósticos VIP ha sido otorgado.</p>
-
                 <h3>6. Propiedad Intelectual y Prohibición de Reventa</h3>
                 <p>Toda la información, picks, estrategias y análisis son propiedad exclusiva de PickPro. Está categóricamente prohibido copiar, reproducir, revender, compartir en grupos públicos o privados (Telegram, WhatsApp, Redes Sociales) o distribuir a terceros el contenido de esta plataforma. La detección de cualquier infracción resultará en la eliminación inmediata de la cuenta sin derecho a reembolso y posibles acciones civiles por infracción a los derechos de autor.</p>
-                
-                <h3>7. Modificaciones</h3>
-                <p>PickPro se reserva el derecho de modificar estos términos en cualquier momento, siendo responsabilidad del usuario revisarlos periódicamente.</p>
             `,
             privacy: `
                 <h2>Aviso de Privacidad Integral</h2>
                 <p><strong>Última actualización: Marzo 2026</strong></p>
-                
                 <h3>1. Identidad y Domicilio del Responsable</h3>
                 <p>PickPro, en cumplimiento a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP), su Reglamento y demás normatividad aplicable, hace de su conocimiento que es el responsable del tratamiento y salvaguarda de los datos personales que usted nos proporcione.</p>
-                
                 <h3>2. Datos Personales Recabados</h3>
                 <p>Para la correcta prestación de nuestros servicios, podremos recabar y tratar los siguientes datos personales: Nombre completo, Edad, Correo Electrónico y Nombre de Usuario. <strong>Datos Sensibles y Financieros:</strong> PickPro NO almacena su información bancaria completa. Los pagos son gestionados bajo los estándares de seguridad de la industria (PCI DSS), almacenando únicamente de forma simbólica en nuestros registros internos tokens de autorización para referencias de pago.</p>
-
                 <h3>3. Finalidades Primarias y Secundarias</h3>
                 <p><strong>Primarias:</strong> a) Creación, validación y gestión de su cuenta de usuario; b) Verificación del requisito de mayoría de edad (+18); c) Proveer el servicio de suscripción digital; d) Envío de correos de soporte, validación o recuperación de contraseñas. <br>
                 <strong>Secundarias:</strong> e) Envío de promociones, noticias y ofertas relacionadas exclusivamente con la plataforma.</p>
-
                 <h3>4. Transferencia de Datos a Terceros</h3>
                 <p>PickPro <strong>NO vende, alquila, ni comercializa</strong> sus datos personales con ninguna entidad externa, agencia de publicidad o empresa ajena a nuestra operación.</p>
-
                 <h3>5. Ejercicio de Derechos ARCO</h3>
                 <p>Usted tiene derecho a conocer qué datos personales tenemos de usted, para qué los utilizamos y las condiciones de su uso (Acceso). Asimismo, es su derecho solicitar la corrección de su información personal (Rectificación); que la eliminemos de nuestra base de datos cuando considere que su tratamiento contraviene la ley (Cancelación); así como oponerse al uso de sus datos para fines específicos (Oposición). Podrá ejercer sus derechos ARCO directamente desde la sección "Mi Perfil" eliminando su cuenta o contactando a nuestro soporte.</p>
-
-                <h3>6. Medidas de Seguridad</h3>
-                <p>Mantenemos estrictas medidas de seguridad administrativas, técnicas y físicas para proteger sus datos personales contra daño, pérdida, alteración, destrucción, uso, acceso o tratamiento no autorizado.</p>
-
-                <h3>7. Modificaciones al Aviso de Privacidad</h3>
-                <p>Nos reservamos el derecho de efectuar en cualquier momento modificaciones o actualizaciones a este aviso. Toda modificación estará disponible en esta sección de la plataforma.</p>
             `
         };
 
